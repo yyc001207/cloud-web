@@ -1,0 +1,3558 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Cloud Server",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "认证"
+                ],
+                "summary": "Login",
+                "operationId": "login_api_user_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/register": {
+            "post": {
+                "tags": [
+                    "认证"
+                ],
+                "summary": "Register",
+                "operationId": "register_api_user_register_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/userInfo": {
+            "post": {
+                "tags": [
+                    "用户"
+                ],
+                "summary": "Get User Info",
+                "operationId": "get_user_info_api_user_userInfo_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/update": {
+            "post": {
+                "tags": [
+                    "用户"
+                ],
+                "summary": "Update User Info",
+                "operationId": "update_user_info_api_user_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/tabs": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "List Tabs",
+                "operationId": "list_tabs_api_nav_tabs_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/tab/add": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Add Tab",
+                "operationId": "add_tab_api_nav_tab_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TabCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/tab/update": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Update Tab Route",
+                "operationId": "update_tab_route_api_nav_tab_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TabUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/tab/delete": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Delete Tab Route",
+                "operationId": "delete_tab_route_api_nav_tab_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/websites": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "List Websites",
+                "operationId": "list_websites_api_nav_websites_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebsiteListRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/website/add": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Add Website",
+                "operationId": "add_website_api_nav_website_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebsiteCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/website/update": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Update Website Route",
+                "operationId": "update_website_route_api_nav_website_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebsiteUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/website/delete": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Delete Website Route",
+                "operationId": "delete_website_route_api_nav_website_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nav/website/order": {
+            "post": {
+                "tags": [
+                    "导航管理"
+                ],
+                "summary": "Update Website Order",
+                "operationId": "update_website_order_api_nav_website_order_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebsiteOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/menus": {
+            "post": {
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "List Menus",
+                "operationId": "list_menus_api_system_menus_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/menu/add": {
+            "post": {
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "Add Menu",
+                "operationId": "add_menu_api_system_menu_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MenuCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/menu/update": {
+            "post": {
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "Update Menu Route",
+                "operationId": "update_menu_route_api_system_menu_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MenuUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/menu/delete": {
+            "post": {
+                "tags": [
+                    "系统管理"
+                ],
+                "summary": "Delete Menu Route",
+                "operationId": "delete_menu_route_api_system_menu_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/upload/file": {
+            "post": {
+                "tags": [
+                    "文件上传"
+                ],
+                "summary": "Upload Single File",
+                "operationId": "upload_single_file_api_upload_file_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_single_file_api_upload_file_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/upload/files": {
+            "post": {
+                "tags": [
+                    "文件上传"
+                ],
+                "summary": "Upload Multiple Files",
+                "operationId": "upload_multiple_files_api_upload_files_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_upload_multiple_files_api_upload_files_post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/proxy/weather": {
+            "post": {
+                "tags": [
+                    "代理服务"
+                ],
+                "summary": "Get Weather",
+                "operationId": "get_weather_api_proxy_weather_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WeatherRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/proxy/holidays": {
+            "post": {
+                "tags": [
+                    "代理服务"
+                ],
+                "summary": "List Holidays",
+                "operationId": "list_holidays_api_proxy_holidays_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/proxy/holiday/add": {
+            "post": {
+                "tags": [
+                    "代理服务"
+                ],
+                "summary": "Add Holiday",
+                "operationId": "add_holiday_api_proxy_holiday_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HolidayCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/proxy/holiday/delete": {
+            "post": {
+                "tags": [
+                    "代理服务"
+                ],
+                "summary": "Delete Holiday Route",
+                "operationId": "delete_holiday_route_api_proxy_holiday_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/text/list": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "List Text Transfers",
+                "operationId": "list_text_transfers_api_transfer_text_list_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferListRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/text/add": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Add Text Transfer",
+                "operationId": "add_text_transfer_api_transfer_text_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TextTransferCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/text/update": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Update Text Transfer Route",
+                "operationId": "update_text_transfer_route_api_transfer_text_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TextTransferUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/text/delete": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Delete Text Transfer Route",
+                "operationId": "delete_text_transfer_route_api_transfer_text_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/file/create": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Create File Transfer Route",
+                "operationId": "create_file_transfer_route_api_transfer_file_create_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileTransferCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/file/chunk": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Upload File Chunk",
+                "operationId": "upload_file_chunk_api_transfer_file_chunk_post",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Fileid"
+                        }
+                    },
+                    {
+                        "name": "chunkIndex",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Chunkindex"
+                        }
+                    },
+                    {
+                        "name": "chunk",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "contentMediaType": "application/octet-stream",
+                            "title": "Chunk"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/file/complete": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Complete File Upload",
+                "operationId": "complete_file_upload_api_transfer_file_complete_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileCompleteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/file/list": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "List File Transfers",
+                "operationId": "list_file_transfers_api_transfer_file_list_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferListRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer/file/delete": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Delete File Transfer Route",
+                "operationId": "delete_file_transfer_route_api_transfer_file_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/global-config": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Get Global Config Route",
+                "operationId": "get_global_config_route_api_openlist_global_config_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/global-config/add": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Add Global Config",
+                "operationId": "add_global_config_api_openlist_global_config_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenListGlobalConfigCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/global-config/update": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Update Global Config Route",
+                "operationId": "update_global_config_route_api_openlist_global_config_update_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenListGlobalConfigUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/global-config/delete": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Delete Global Config Route",
+                "operationId": "delete_global_config_route_api_openlist_global_config_delete_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task-config/list": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "List Task Configs Route",
+                "operationId": "list_task_configs_route_api_openlist_task_config_list_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task-config": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Get Task Config Route",
+                "operationId": "get_task_config_route_api_openlist_task_config_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task-config/add": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Add Task Config",
+                "operationId": "add_task_config_api_openlist_task_config_add_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenListTaskConfigCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task-config/update": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Update Task Config Route",
+                "operationId": "update_task_config_route_api_openlist_task_config_update_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenListTaskConfigUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task-config/delete": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Delete Task Config Route",
+                "operationId": "delete_task_config_route_api_openlist_task_config_delete_post",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/execute": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Execute Strm Task",
+                "operationId": "execute_strm_task_api_openlist_execute_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenListExecuteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/cancel": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Cancel Strm Task",
+                "operationId": "cancel_strm_task_api_openlist_cancel_post",
+                "parameters": [
+                    {
+                        "name": "taskId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Taskid"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_upload_multiple_files_api_upload_files_post": {
+                "properties": {
+                    "files": {
+                        "items": {
+                            "type": "string",
+                            "contentMediaType": "application/octet-stream"
+                        },
+                        "type": "array",
+                        "title": "Files"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "files"
+                ],
+                "title": "Body_upload_multiple_files_api_upload_files_post"
+            },
+            "Body_upload_single_file_api_upload_file_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "contentMediaType": "application/octet-stream",
+                        "title": "File"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_upload_single_file_api_upload_file_post"
+            },
+            "FileCompleteRequest": {
+                "properties": {
+                    "fileId": {
+                        "type": "integer",
+                        "title": "Fileid",
+                        "description": "文件 ID"
+                    },
+                    "totalChunks": {
+                        "type": "integer",
+                        "title": "Totalchunks",
+                        "description": "总分片数"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "fileId",
+                    "totalChunks"
+                ],
+                "title": "FileCompleteRequest"
+            },
+            "FileTransferCreateRequest": {
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "title": "Filename",
+                        "description": "文件名"
+                    },
+                    "fileSize": {
+                        "type": "integer",
+                        "title": "Filesize",
+                        "description": "文件大小"
+                    },
+                    "fileHash": {
+                        "type": "string",
+                        "title": "Filehash",
+                        "description": "文件哈希值"
+                    },
+                    "contentType": {
+                        "type": "string",
+                        "title": "Contenttype",
+                        "description": "文件类型"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "filename",
+                    "fileSize",
+                    "fileHash",
+                    "contentType"
+                ],
+                "title": "FileTransferCreateRequest"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "HolidayCreateRequest": {
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "title": "Year",
+                        "description": "年份"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "year"
+                ],
+                "title": "HolidayCreateRequest"
+            },
+            "IconInfo": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "title": "Type",
+                        "description": "图标类型：file 或 text"
+                    },
+                    "url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Url",
+                        "description": "文件 URL"
+                    },
+                    "text": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Text",
+                        "description": "显示文字"
+                    },
+                    "backgroundColor": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Backgroundcolor",
+                        "description": "背景颜色",
+                        "default": "#2ecc71"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "type"
+                ],
+                "title": "IconInfo"
+            },
+            "LoginRequest": {
+                "properties": {
+                    "userName": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 3,
+                        "title": "Username",
+                        "description": "用户名"
+                    },
+                    "password": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "minLength": 6,
+                        "title": "Password",
+                        "description": "密码"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "userName",
+                    "password"
+                ],
+                "title": "LoginRequest"
+            },
+            "MenuCreateRequest": {
+                "properties": {
+                    "path": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Path",
+                        "description": "路由路径"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name",
+                        "description": "路由名称"
+                    },
+                    "component": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Component",
+                        "description": "组件路径"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/MenuMeta",
+                        "description": "菜单元数据"
+                    },
+                    "parentId": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Parentid",
+                        "description": "父级菜单 ID"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "meta"
+                ],
+                "title": "MenuCreateRequest"
+            },
+            "MenuMeta": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title",
+                        "description": "菜单标题"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Type",
+                        "description": "菜单类型",
+                        "default": "menu"
+                    },
+                    "hidden": {
+                        "type": "boolean",
+                        "title": "Hidden",
+                        "description": "是否隐藏",
+                        "default": false
+                    },
+                    "isTop": {
+                        "type": "boolean",
+                        "title": "Istop",
+                        "description": "是否置顶",
+                        "default": false
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "title": "MenuMeta"
+            },
+            "MenuUpdateRequest": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id",
+                        "description": "Menu ID"
+                    },
+                    "path": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Path",
+                        "description": "路由路径"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name",
+                        "description": "路由名称"
+                    },
+                    "component": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Component",
+                        "description": "组件路径"
+                    },
+                    "meta": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MenuMeta"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "菜单元数据"
+                    },
+                    "parentId": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Parentid",
+                        "description": "父级菜单 ID"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ],
+                "title": "MenuUpdateRequest"
+            },
+            "OpenListExecuteRequest": {
+                "properties": {
+                    "globalConfigId": {
+                        "type": "integer",
+                        "title": "Globalconfigid",
+                        "description": "全局配置 ID"
+                    },
+                    "taskConfigId": {
+                        "type": "integer",
+                        "title": "Taskconfigid",
+                        "description": "任务配置 ID"
+                    },
+                    "incrementalMode": {
+                        "type": "boolean",
+                        "title": "Incrementalmode",
+                        "description": "是否增量更新",
+                        "default": true
+                    },
+                    "force": {
+                        "type": "boolean",
+                        "title": "Force",
+                        "description": "是否强制重新生成",
+                        "default": false
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "globalConfigId",
+                    "taskConfigId"
+                ],
+                "title": "OpenListExecuteRequest"
+            },
+            "OpenListGlobalConfigCreateRequest": {
+                "properties": {
+                    "baseUrl": {
+                        "type": "string",
+                        "title": "Baseurl",
+                        "description": "OpenList 服务器地址"
+                    },
+                    "token": {
+                        "type": "string",
+                        "title": "Token",
+                        "description": "OpenList Token"
+                    },
+                    "videoExtensions": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Videoextensions",
+                        "description": "视频格式",
+                        "default": [
+                            ".mp4",
+                            ".mkv",
+                            ".avi",
+                            ".wmv",
+                            ".flv",
+                            ".mov",
+                            ".webm"
+                        ]
+                    },
+                    "subtitleExtensions": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Subtitleextensions",
+                        "description": "字幕格式",
+                        "default": [
+                            ".srt",
+                            ".ass",
+                            ".ssa",
+                            ".sub",
+                            ".vtt"
+                        ]
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "baseUrl",
+                    "token"
+                ],
+                "title": "OpenListGlobalConfigCreateRequest"
+            },
+            "OpenListGlobalConfigUpdateRequest": {
+                "properties": {
+                    "baseUrl": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Baseurl"
+                    },
+                    "token": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Token"
+                    },
+                    "videoExtensions": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Videoextensions"
+                    },
+                    "subtitleExtensions": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Subtitleextensions"
+                    }
+                },
+                "type": "object",
+                "title": "OpenListGlobalConfigUpdateRequest"
+            },
+            "OpenListTaskConfigCreateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "任务配置名称"
+                    },
+                    "outputDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Outputdir",
+                        "description": "输出目录"
+                    },
+                    "taskPaths": {
+                        "type": "string",
+                        "title": "Taskpaths",
+                        "description": "处理路径"
+                    },
+                    "maxScanDepth": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Maxscandepth",
+                        "description": "扫描深度限制"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name",
+                    "taskPaths"
+                ],
+                "title": "OpenListTaskConfigCreateRequest"
+            },
+            "OpenListTaskConfigUpdateRequest": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "outputDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Outputdir"
+                    },
+                    "taskPaths": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Taskpaths"
+                    },
+                    "maxScanDepth": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Maxscandepth"
+                    }
+                },
+                "type": "object",
+                "title": "OpenListTaskConfigUpdateRequest"
+            },
+            "RegisterRequest": {
+                "properties": {
+                    "userName": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "minLength": 3,
+                        "title": "Username",
+                        "description": "用户名"
+                    },
+                    "password": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "minLength": 6,
+                        "title": "Password",
+                        "description": "密码"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "title": "Isactive",
+                        "description": "是否激活",
+                        "default": true
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "userName",
+                    "password"
+                ],
+                "title": "RegisterRequest"
+            },
+            "TabCreateRequest": {
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "title": "Label",
+                        "description": "标签名称"
+                    },
+                    "desc": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Desc",
+                        "description": "描述"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "label"
+                ],
+                "title": "TabCreateRequest"
+            },
+            "TabUpdateRequest": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id",
+                        "description": "Tab ID"
+                    },
+                    "label": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Label",
+                        "description": "标签名称"
+                    },
+                    "desc": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Desc",
+                        "description": "描述"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ],
+                "title": "TabUpdateRequest"
+            },
+            "TextTransferCreateRequest": {
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "title": "Content",
+                        "description": "文本内容"
+                    },
+                    "title": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Title",
+                        "description": "文本标题"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "content"
+                ],
+                "title": "TextTransferCreateRequest"
+            },
+            "TextTransferUpdateRequest": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id",
+                        "description": "文本中转 ID"
+                    },
+                    "title": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Title",
+                        "description": "文本标题"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ],
+                "title": "TextTransferUpdateRequest"
+            },
+            "TransferListRequest": {
+                "properties": {
+                    "date": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Date",
+                        "description": "按日期查询，格式：YYYY-MM-DD"
+                    },
+                    "pageNum": {
+                        "type": "integer",
+                        "title": "Pagenum",
+                        "description": "页码",
+                        "default": 1
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "title": "Pagesize",
+                        "description": "每页大小",
+                        "default": 10
+                    }
+                },
+                "type": "object",
+                "title": "TransferListRequest"
+            },
+            "UserUpdateRequest": {
+                "properties": {
+                    "userName": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 3
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Username",
+                        "description": "用户名"
+                    },
+                    "password": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 128,
+                                "minLength": 6
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Password",
+                        "description": "密码"
+                    },
+                    "isActive": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Isactive",
+                        "description": "是否激活"
+                    }
+                },
+                "type": "object",
+                "title": "UserUpdateRequest"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            },
+            "WeatherRequest": {
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "title": "Location",
+                        "description": "地点名称或 ID"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "location"
+                ],
+                "title": "WeatherRequest"
+            },
+            "WebsiteCreateRequest": {
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "title": "Label",
+                        "description": "网站名称"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url",
+                        "description": "网站地址"
+                    },
+                    "desc": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Desc",
+                        "description": "描述"
+                    },
+                    "icon": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/IconInfo"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "图标信息"
+                    },
+                    "github": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Github",
+                        "description": "GitHub 地址"
+                    },
+                    "document": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Document",
+                        "description": "文档地址"
+                    },
+                    "tabId": {
+                        "type": "integer",
+                        "title": "Tabid",
+                        "description": "关联的 Tab ID"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "label",
+                    "url",
+                    "tabId"
+                ],
+                "title": "WebsiteCreateRequest"
+            },
+            "WebsiteListRequest": {
+                "properties": {
+                    "tabId": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tabid",
+                        "description": "Tab ID"
+                    },
+                    "label": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Label",
+                        "description": "网站名称模糊查询"
+                    },
+                    "pageNum": {
+                        "type": "integer",
+                        "title": "Pagenum",
+                        "description": "页码",
+                        "default": 1
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "title": "Pagesize",
+                        "description": "每页数量，0 表示返回所有",
+                        "default": 0
+                    }
+                },
+                "type": "object",
+                "title": "WebsiteListRequest"
+            },
+            "WebsiteOrderRequest": {
+                "properties": {
+                    "tabId": {
+                        "type": "integer",
+                        "title": "Tabid",
+                        "description": "标签页 ID"
+                    },
+                    "websiteIds": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array",
+                        "title": "Websiteids",
+                        "description": "Website ID 数组"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "tabId",
+                    "websiteIds"
+                ],
+                "title": "WebsiteOrderRequest"
+            },
+            "WebsiteUpdateRequest": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id",
+                        "description": "Website ID"
+                    },
+                    "label": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Label",
+                        "description": "网站名称"
+                    },
+                    "url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Url",
+                        "description": "网站地址"
+                    },
+                    "desc": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Desc",
+                        "description": "描述"
+                    },
+                    "icon": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/IconInfo"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "图标信息"
+                    },
+                    "github": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Github",
+                        "description": "GitHub 地址"
+                    },
+                    "document": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Document",
+                        "description": "文档地址"
+                    },
+                    "tabId": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Tabid",
+                        "description": "关联的 Tab ID"
+                    },
+                    "order": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Order",
+                        "description": "排序值"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ],
+                "title": "WebsiteUpdateRequest"
+            }
+        }
+    }
+}
