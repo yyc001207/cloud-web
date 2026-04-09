@@ -44,38 +44,90 @@
                 }
             }
         },
-        "/api/user/register": {
+        "/api/user/logout": {
             "post": {
                 "tags": [
                     "认证"
                 ],
-                "summary": "Register",
-                "operationId": "register_api_user_register_post",
+                "summary": "用户登出",
+                "description": "用户登出接口，使当前用户的认证令牌失效。需要在请求头中提供有效的认证令牌。",
+                "operationId": "logout_api_user_logout_post",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "认证令牌，格式为 'Bearer {token}'",
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                    }
+                ],
                 "requestBody": {
+                    "required": false,
+                    "description": "登出请求体（可选，为空对象）",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RegisterRequest"
-                            }
+                                "$ref": "#/components/schemas/LogoutRequest"
+                            },
+                            "example": {}
                         }
-                    },
-                    "required": true
+                    }
                 },
                 "responses": {
                     "200": {
-                        "description": "Successful Response",
+                        "description": "登出成功",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "$ref": "#/components/schemas/LogoutResponse"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "登出成功",
+                                    "data": null
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "未授权 - 认证令牌无效或已过期",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "message": "认证令牌无效或已过期",
+                                    "data": null
+                                }
                             }
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
+                        "description": "参数验证错误",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                },
+                                "example": {
+                                    "code": 500,
+                                    "message": "服务器内部错误",
+                                    "data": null
                                 }
                             }
                         }
@@ -2556,6 +2608,76 @@
                 ],
                 "title": "LoginRequest"
             },
+            "LogoutRequest": {
+                "properties": {},
+                "type": "object",
+                "title": "LogoutRequest",
+                "description": "用户登出请求体（可选，通常为空对象）"
+            },
+            "LogoutResponse": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "description": "响应状态码",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "description": "响应消息",
+                        "example": "登出成功"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data",
+                        "description": "响应数据（登出成功时为空）",
+                        "example": null
+                    }
+                },
+                "type": "object",
+                "title": "LogoutResponse",
+                "description": "用户登出响应"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "description": "错误状态码",
+                        "example": 401
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "description": "错误消息",
+                        "example": "认证令牌无效或已过期"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data",
+                        "description": "错误详情（可选）",
+                        "example": null
+                    }
+                },
+                "type": "object",
+                "title": "ErrorResponse",
+                "description": "错误响应结构"
+            },
             "MenuCreateRequest": {
                 "properties": {
                     "path": {
@@ -2993,36 +3115,6 @@
                 },
                 "type": "object",
                 "title": "OpenListTaskConfigUpdateRequest"
-            },
-            "RegisterRequest": {
-                "properties": {
-                    "userName": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "minLength": 3,
-                        "title": "Username",
-                        "description": "用户名"
-                    },
-                    "password": {
-                        "type": "string",
-                        "maxLength": 128,
-                        "minLength": 6,
-                        "title": "Password",
-                        "description": "密码"
-                    },
-                    "isActive": {
-                        "type": "boolean",
-                        "title": "Isactive",
-                        "description": "是否激活",
-                        "default": true
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "userName",
-                    "password"
-                ],
-                "title": "RegisterRequest"
             },
             "TabCreateRequest": {
                 "properties": {

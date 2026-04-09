@@ -2,8 +2,8 @@ import request from '../request'
 import type {
   LoginRequest,
   LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
+  LogoutRequest,
+  LogoutResponse,
 } from '../../types/api'
 
 // 认证模块 API
@@ -13,8 +13,8 @@ export const authApi = {
     return request.post<LoginResponse>('/user/login', data)
   },
 
-  // 注册
-  register(data: RegisterRequest) {
-    return request.post<RegisterResponse>('/user/register', data)
+  // 登出
+  logout(data?: LogoutRequest) {
+    return request.post<LogoutResponse>('/user/logout', data || {})
   },
 }

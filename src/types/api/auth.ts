@@ -10,17 +10,16 @@ export interface LoginResponse {
   user: UserInfo
 }
 
-// 注册请求
-export interface RegisterRequest {
-  userName: string
-  password: string
-  isActive?: boolean
+// 登出请求
+export interface LogoutRequest {
+  [key: string]: any
 }
 
-// 注册响应
-export interface RegisterResponse {
-  token: string
-  user: UserInfo
+// 登出响应
+export interface LogoutResponse {
+  code: number
+  message: string
+  data: any
 }
 
 // 用户信息
