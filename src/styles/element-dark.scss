@@ -1,0 +1,172 @@
+@use 'sass:color';
+
+$primary: #6fe692;
+$on-surface: #e5e2e1;
+$on-surface-variant: #bbcbbb;
+$outline-variant: #3d4a3e;
+$surface: #131313;
+$surface-container: #201f1f;
+$surface-container-low: #1c1b1b;
+$surface-container-high: #2a2a2a;
+$surface-container-highest: #353534;
+
+:root {
+    --el-color-primary: #{$primary};
+    --el-color-primary-light-3: #{color.mix(white, $primary, 30%)};
+    --el-color-primary-light-5: #{color.mix(white, $primary, 50%)};
+    --el-color-primary-light-7: #{color.mix(white, $primary, 70%)};
+    --el-color-primary-light-8: #{color.mix(white, $primary, 80%)};
+    --el-color-primary-light-9: #{color.mix(white, $primary, 90%)};
+    --el-color-primary-dark-2: #{color.mix(black, $primary, 20%)};
+
+    --el-text-color-primary: #{$on-surface};
+    --el-text-color-regular: #{$on-surface};
+    --el-text-color-secondary: #{$on-surface-variant};
+    --el-text-color-placeholder: #{rgba($on-surface-variant, 0.4)};
+    --el-text-color-disabled: #{rgba($on-surface, 0.3)};
+
+    --el-border-color: #{$outline-variant};
+    --el-border-color-light: #{rgba($outline-variant, 0.6)};
+    --el-border-color-lighter: #{rgba($outline-variant, 0.4)};
+    --el-border-color-extra-light: #{rgba($outline-variant, 0.2)};
+
+    --el-fill-color: #{$surface-container-high};
+    --el-fill-color-light: #{$surface-container};
+    --el-fill-color-lighter: #{$surface-container-low};
+    --el-fill-color-extra-light: #{$surface-container-low};
+    --el-fill-color-dark: #{$surface-container-highest};
+    --el-fill-color-darker: #{$surface-container-highest};
+    --el-fill-color-blank: #{$surface-container};
+
+    --el-bg-color: #{$surface-container};
+    --el-bg-color-page: #{$surface};
+    --el-bg-color-overlay: #{$surface-container-high};
+
+    --el-table-bg-color: #{$surface-container};
+    --el-table-tr-bg-color: #{$surface-container};
+    --el-table-header-bg-color: #{$surface-container-high};
+    --el-table-row-hover-bg-color: #{$surface-container-high};
+    --el-table-border-color: #{$outline-variant};
+    --el-table-text-color: #{$on-surface};
+    --el-table-header-text-color: #{$on-surface-variant};
+    --el-table-current-row-bg-color: #{$surface-container-high};
+
+    --el-color-success: #67c23a;
+    --el-color-warning: #e6a23c;
+    --el-color-danger: #f56c6c;
+    --el-color-info: #909399;
+
+    --el-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --el-box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --el-box-shadow-lighter: 0 1px 4px rgba(0, 0, 0, 0.2);
+    --el-box-shadow-dark: 0 6px 16px rgba(0, 0, 0, 0.5);
+
+    --el-overlay-color: rgba(0, 0, 0, 0.6);
+    --el-overlay-color-light: rgba(0, 0, 0, 0.4);
+    --el-overlay-color-lighter: rgba(0, 0, 0, 0.2);
+}
+
+.el-dialog {
+    background-color: var(--surface-container);
+    border: 1px solid var(--outline-variant);
+}
+
+.el-dialog__title {
+    color: var(--on-surface);
+}
+
+.el-dialog__body {
+    color: var(--on-surface);
+}
+
+.el-dialog__headerbtn .el-dialog__close {
+    color: var(--on-surface-variant);
+}
+
+.el-message-box {
+    background-color: var(--surface-container);
+    border: 1px solid var(--outline-variant);
+
+    .el-message-box__title {
+        color: var(--on-surface);
+    }
+
+    .el-message-box__message {
+        color: var(--on-surface);
+    }
+}
+
+.el-form-item__label {
+    color: var(--on-surface-variant);
+}
+
+.el-input__wrapper {
+    background-color: var(--surface-container-low);
+    box-shadow: 0 0 0 1px var(--outline-variant) inset;
+
+    &:hover {
+        box-shadow: 0 0 0 1px var(--on-surface-variant) inset;
+    }
+
+    &.is-focus {
+        box-shadow: 0 0 0 1px var(--primary) inset;
+    }
+}
+
+.el-input__inner {
+    color: var(--on-surface);
+
+    &::placeholder {
+        color: var(--el-text-color-placeholder);
+    }
+}
+
+.el-textarea__inner {
+    background-color: var(--surface-container-low);
+    color: var(--on-surface);
+    box-shadow: 0 0 0 1px var(--outline-variant) inset;
+
+    &:hover {
+        box-shadow: 0 0 0 1px var(--on-surface-variant) inset;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 1px var(--primary) inset;
+    }
+}
+
+.el-input-number__decrease,
+.el-input-number__increase {
+    background-color: var(--surface-container-high);
+    color: var(--on-surface-variant);
+    border-color: var(--outline-variant);
+}
+
+.el-pagination {
+    --el-pagination-bg-color: var(--surface-container);
+    --el-pagination-button-bg-color: var(--surface-container-high);
+    --el-pagination-hover-color: var(--primary);
+}
+
+.el-select-dropdown {
+    background-color: var(--surface-container);
+    border: 1px solid var(--outline-variant);
+}
+
+.el-select-dropdown__item {
+    color: var(--on-surface);
+
+    &.hover,
+    &:hover {
+        background-color: var(--surface-container-high);
+    }
+
+    &.selected {
+        color: var(--primary);
+    }
+}
+
+.el-message {
+    background-color: var(--surface-container-high);
+    border-color: var(--outline-variant);
+}

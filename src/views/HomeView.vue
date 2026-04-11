@@ -1,13 +1,25 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '../stores/app'
-import { resources } from '../data/resources'
+import { useHomeData } from '../composables/useHomeData'
 import AppHeader from '../components/AppHeader.vue'
 import ResourceIconCard from '../components/ResourceIconCard.vue'
 import ResourceDetailCard from '../components/ResourceDetailCard.vue'
 
 const appStore = useAppStore()
-const { viewMode, networkMode } = storeToRefs(appStore)
+const { viewMode } = storeToRefs(appStore)
+
+const { tabs, websites, activeTabId, loading, switchTab, init } = useHomeData()
+
+function getTabLabel(tabId: number): string {
+  const tab = tabs.value.find(t => t.id === tabId)
+  return tab?.label || ''
+}
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <template>
@@ -16,25 +28,25 @@ const { viewMode, networkMode } = storeToRefs(appStore)
 
     <main class="main-content">
       <div class="container">
-        <!-- Toolbar -->
         <div class="toolbar">
-          <!-- Network Mode Switch -->
-          <div class="network-switch">
-            <button
-              :class="['switch-btn', { active: networkMode === 'internal' }]"
-              @click="appStore.setNetworkMode('internal')"
-            >
-              内网地址
-            </button>
-            <button
-              :class="['switch-btn', { active: networkMode === 'external' }]"
-              @click="appStore.setNetworkMode('external')"
-            >
-              外网地址
-            </button>
+          <div class="toolbar-left">
+            <div class="tab-switch">
+              <button
+                :class="['tab-btn', { active: activeTabId === null }]"
+                @click="switchTab(null)"
+              >
+                全部
+              </button>
+              <button
+                v-for="tab in tabs"
+                :key="tab.id"
+                :class="['tab-btn', { active: activeTabId === tab.id }]"
+                @click="switchTab(tab.id)"
+              >
+                {{ tab.label }}
+              </button>
+            </div>
           </div>
-
-          <!-- View Mode Switch -->
           <div class="view-switch">
             <button
               :class="['view-btn', { active: viewMode === 'icon' }]"
@@ -53,28 +65,26 @@ const { viewMode, networkMode } = storeToRefs(appStore)
           </div>
         </div>
 
-        <!-- Resource Grid -->
         <Transition name="fade" mode="out-in">
           <div
             v-if="viewMode === 'icon'"
             key="icon"
             class="icon-grid"
+            v-loading="loading"
           >
             <ResourceIconCard
-              v-for="resource in resources"
-              :key="resource.id"
-              :resource="resource"
+              v-for="website in websites"
+              :key="website.id"
+              :website="website"
+              :tab-label="getTabLabel(website.tabId)"
             />
           </div>
-          <div
-            v-else
-            key="card"
-            class="card-list"
-          >
+          <div v-else key="card" class="card-list" v-loading="loading">
             <ResourceDetailCard
-              v-for="resource in resources"
-              :key="resource.id"
-              :resource="resource"
+              v-for="website in websites"
+              :key="website.id"
+              :website="website"
+              :tab-label="getTabLabel(website.tabId)"
             />
           </div>
         </Transition>
@@ -109,6 +119,13 @@ const { viewMode, networkMode } = storeToRefs(appStore)
   gap: 16px;
 }
 
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .network-switch {
   display: flex;
   padding: 6px;
@@ -118,6 +135,37 @@ const { viewMode, networkMode } = storeToRefs(appStore)
 }
 
 .switch-btn {
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.active {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(111, 230, 146, 0.2);
+  }
+
+  &:hover:not(.active) {
+    color: var(--on-surface);
+  }
+}
+
+.tab-switch {
+  display: flex;
+  padding: 6px;
+  background: var(--surface-container-low);
+  border-radius: 9999px;
+  border: 1px solid rgba(61, 74, 62, 0.1);
+}
+
+.tab-btn {
   padding: 10px 24px;
   border-radius: 9999px;
   font-size: 0.875rem;
@@ -207,10 +255,11 @@ const { viewMode, networkMode } = storeToRefs(appStore)
   gap: 16px;
 }
 
-// Transitions
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .fade-enter-from,

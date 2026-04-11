@@ -1,63 +1,46 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted, onUnmounted } from 'vue'
+import { useTemplateRef, onMounted, onUnmounted } from 'vue'
+import type {
+  WeatherCurrentUI,
+  WeatherStatItem,
+  HourlyForecastUI,
+  DailyForecastUI,
+} from '../types/weather'
 
 const props = defineProps<{
   visible: boolean
+  loading: boolean
+  error: string | null
+  currentWeather: WeatherCurrentUI | null
+  stats: WeatherStatItem[]
+  hourlyForecast: HourlyForecastUI[]
+  dailyForecast: DailyForecastUI[]
+  refresh: () => Promise<void>
 }>()
 
 const emit = defineEmits<{
   'update:visible': [value: boolean]
 }>()
 
-const currentWeather = ref({
-  temperature: 22,
-  condition: '多云',
-  icon: '☁️',
-  aqi: 45,
-  aqiLevel: '优',
-  location: '广东省深圳市南山区',
-})
-
-const stats = ref([
-  { label: '风速', value: '3.5m/s' },
-  { label: '湿度', value: '65%' },
-  { label: '气压', value: '1012 hPa' },
-  { label: '降水量', value: '0mm' },
-  { label: '温度范围', value: '18° - 25°' },
-  { label: '日出日落', value: '06:30  18:45' },
-])
-
-const hourlyForecast = ref([
-  { time: '现在', icon: '☁️', temp: 22, active: true },
-  { time: '14:00', icon: '☁️', temp: 23 },
-  { time: '15:00', icon: '☀️', temp: 24 },
-  { time: '16:00', icon: '☀️', temp: 24 },
-  { time: '17:00', icon: '☁️', temp: 22 },
-  { time: '18:00', icon: '☁️', temp: 21 },
-  { time: '19:00', icon: '☁️', temp: 20 },
-  { time: '20:00', icon: '☁️', temp: 19 },
-  { time: '21:00', icon: '🌙', temp: 18 },
-  { time: '22:00', icon: '🌙', temp: 17 },
-  { time: '23:00', icon: '☁️', temp: 17 },
-])
-
-const dailyForecast = ref([
-  { day: '今天', icon: '☁️', low: 18, high: 25 },
-  { day: '周一', icon: '☀️', low: 19, high: 26 },
-  { day: '周二', icon: '🌧️', low: 16, high: 21 },
-  { day: '周三', icon: '🌧️', low: 15, high: 20 },
-  { day: '周四', icon: '☁️', low: 17, high: 23 },
-  { day: '周五', icon: '☁️', low: 18, high: 24, opacity: 0.6 },
-  { day: '周六', icon: '☀️', low: 19, high: 27, opacity: 0.4 },
-])
+function mapWeatherIcon(iconCode: string): string {
+  const code = Number(iconCode)
+  if (code === 100 || code === 150) return 'wb_sunny'
+  if ((code >= 101 && code <= 103) || (code >= 151 && code <= 153))
+    return 'partly_cloudy_day'
+  if (code === 104 || code === 154) return 'cloud'
+  if (code >= 300 && code < 400) return 'rainy'
+  if (code >= 400 && code < 500) return 'thunderstorm'
+  if (code >= 500 && code < 600) return 'foggy'
+  if (code >= 600 && code < 700) return 'ac_unit'
+  return 'partly_cloudy_day'
+}
 
 function closeModal() {
   emit('update:visible', false)
 }
 
-function refreshData() {
-  // 刷新数据逻辑
-  console.log('刷新天气数据')
+async function refreshData() {
+  await props.refresh()
 }
 
 // 24小时预报滚动导航
@@ -113,7 +96,9 @@ onUnmounted(() => {
                 <span class="material-symbols-outlined">location_on</span>
                 <span>当前位置</span>
               </div>
-              <h2 class="location-name">{{ currentWeather.location }}</h2>
+              <h2 v-if="currentWeather" class="location-name">
+                {{ currentWeather.location }}
+              </h2>
             </div>
             <button class="close-btn" @click="closeModal">
               <span class="material-symbols-outlined">close</span>
@@ -122,109 +107,136 @@ onUnmounted(() => {
 
           <!-- Content -->
           <div class="modal-content">
-            <!-- Left: Current Weather -->
-            <div class="current-weather">
-              <div class="temperature-display">
-                <span class="temp-value"
-                  >{{ currentWeather.temperature }}°C</span
-                >
-                <div class="weather-status">
-                  <div class="weather-icon-large">
-                    {{ currentWeather.icon }}
-                  </div>
-                  <div class="weather-condition">
-                    {{ currentWeather.condition }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="aqi-badge">
-                <span class="material-symbols-outlined">air</span>
-                <span class="aqi-value"
-                  >{{ currentWeather.aqi }} {{ currentWeather.aqiLevel }}</span
-                >
-                <span class="aqi-label">| 空气质量指数</span>
-              </div>
-
-              <!-- Stats Grid -->
-              <div class="stats-grid">
-                <div
-                  v-for="(stat, index) in stats"
-                  :key="index"
-                  class="stat-item"
-                >
-                  <p class="stat-label">{{ stat.label }}</p>
-                  <p class="stat-value">
-                    {{ stat.value }}
-                  </p>
-                </div>
-              </div>
+            <div v-if="loading" class="state-container">
+              <span class="material-symbols-outlined spinning"
+                >progress_activity</span
+              >
+              <p class="state-text">加载中...</p>
             </div>
 
-            <!-- Right: Forecasts -->
-            <div class="forecasts">
-              <!-- 24H Forecast -->
-              <section class="hourly-forecast">
-                <h3 class="section-title">24小时预报</h3>
-                <div class="hourly-forecast-container">
-                  <button
-                    class="nav-btn nav-btn-left"
-                    @click="scrollHourly('left')"
-                  >
-                    <span class="material-symbols-outlined">chevron_left</span>
-                  </button>
-                  <div class="hourly-scroll-wrapper">
-                    <div ref="hourlyScroll" class="hourly-scroll">
-                      <div
-                        v-for="(hour, index) in hourlyForecast"
-                        :key="index"
-                        :class="['hour-item', { active: hour.active }]"
-                      >
-                        <span class="hour-time">{{ hour.time }}</span>
-                        <div class="hour-icon">{{ hour.icon }}</div>
-                        <span class="hour-temp">{{ hour.temp }}°</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    class="nav-btn nav-btn-right"
-                    @click="scrollHourly('right')"
-                  >
-                    <span class="material-symbols-outlined">chevron_right</span>
-                  </button>
-                </div>
-              </section>
+            <div v-else-if="error && !currentWeather" class="state-container">
+              <span class="material-symbols-outlined error-icon"
+                >error_outline</span
+              >
+              <p class="state-text">{{ error }}</p>
+              <button class="retry-btn" @click="refreshData">重试</button>
+            </div>
 
-              <!-- 7-Day Forecast -->
-              <section class="daily-forecast">
-                <h3 class="section-title">7日天气预报</h3>
-                <div class="daily-list">
-                  <div
-                    v-for="(day, index) in dailyForecast"
-                    :key="index"
-                    class="day-item"
-                    :style="{ opacity: day.opacity || 1 }"
+            <template v-else-if="currentWeather">
+              <!-- Left: Current Weather -->
+              <div class="current-weather">
+                <div class="temperature-display">
+                  <span class="temp-value"
+                    >{{ currentWeather.temperature }}°C</span
                   >
-                    <span class="day-name">{{ day.day }}</span>
-                    <div class="day-weather">
-                      <span class="day-icon">{{ day.icon }}</span>
-                      <div class="temp-bar">
-                        <div
-                          class="temp-range"
-                          :style="{
-                            left: `${(day.low - 10) * 3}%`,
-                            right: `${100 - (day.high - 10) * 3}%`,
-                          }"
-                        ></div>
-                      </div>
-                    </div>
-                    <span class="day-temps"
-                      >{{ day.low }}° / {{ day.high }}°</span
+                  <div class="weather-status">
+                    <span
+                      class="material-symbols-outlined weather-icon-large"
+                      >{{ mapWeatherIcon(currentWeather.icon) }}</span
                     >
+                    <div class="weather-condition">
+                      {{ currentWeather.condition }}
+                    </div>
                   </div>
                 </div>
-              </section>
-            </div>
+
+                <div class="aqi-badge">
+                  <span class="material-symbols-outlined">air</span>
+                  <span class="aqi-value"
+                    >{{ currentWeather.aqi }}
+                    {{ currentWeather.aqiLevel }}</span
+                  >
+                  <span class="aqi-label">| 空气质量指数</span>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                  <div
+                    v-for="(stat, index) in stats"
+                    :key="index"
+                    class="stat-item"
+                  >
+                    <p class="stat-label">{{ stat.label }}</p>
+                    <p class="stat-value">
+                      {{ stat.value }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Forecasts -->
+              <div class="forecasts">
+                <!-- 24H Forecast -->
+                <section class="hourly-forecast">
+                  <h3 class="section-title">24小时预报</h3>
+                  <div class="hourly-forecast-container">
+                    <button
+                      class="nav-btn nav-btn-left"
+                      @click="scrollHourly('left')"
+                    >
+                      <span class="material-symbols-outlined"
+                        >chevron_left</span
+                      >
+                    </button>
+                    <div class="hourly-scroll-wrapper">
+                      <div ref="hourlyScroll" class="hourly-scroll">
+                        <div
+                          v-for="(hour, index) in hourlyForecast"
+                          :key="index"
+                          class="hour-item"
+                        >
+                          <span class="hour-time">{{ hour.time }}</span>
+                          <span class="material-symbols-outlined hour-icon">{{
+                            mapWeatherIcon(hour.icon)
+                          }}</span>
+                          <span class="hour-temp">{{ hour.temp }}°</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="nav-btn nav-btn-right"
+                      @click="scrollHourly('right')"
+                    >
+                      <span class="material-symbols-outlined"
+                        >chevron_right</span
+                      >
+                    </button>
+                  </div>
+                </section>
+
+                <!-- 7-Day Forecast -->
+                <section class="daily-forecast">
+                  <h3 class="section-title">7日天气预报</h3>
+                  <div class="daily-list">
+                    <div
+                      v-for="(day, index) in dailyForecast"
+                      :key="index"
+                      class="day-item"
+                    >
+                      <span class="day-name">{{ day.day }}</span>
+                      <div class="day-weather">
+                        <span class="material-symbols-outlined day-icon">{{
+                          mapWeatherIcon(day.iconDay)
+                        }}</span>
+                        <span class="day-text">{{ day.textDay }}</span>
+                        <div class="temp-bar">
+                          <div
+                            class="temp-range"
+                            :style="{
+                              left: `${(day.tempMin - 10) * 3}%`,
+                              right: `${100 - (day.tempMax - 10) * 3}%`,
+                            }"
+                          ></div>
+                        </div>
+                      </div>
+                      <span class="day-temps"
+                        >{{ day.tempMin }}° / {{ day.tempMax }}°</span
+                      >
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </template>
           </div>
 
           <!-- Footer -->
@@ -368,6 +380,7 @@ onUnmounted(() => {
 .weather-icon-large {
   font-size: 2.5rem;
   line-height: 1;
+  color: var(--primary);
 }
 
 .weather-condition {
@@ -528,11 +541,6 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-
-  &.active {
-    background: rgba(42, 42, 42, 0.5);
-    border: 1px solid rgba(111, 230, 146, 0.2);
-  }
 }
 
 .hour-time {
@@ -542,6 +550,7 @@ onUnmounted(() => {
 
 .hour-icon {
   font-size: 1.5rem;
+  color: var(--primary);
 }
 
 .hour-temp {
@@ -595,6 +604,13 @@ onUnmounted(() => {
 
 .day-icon {
   font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.day-text {
+  font-size: 0.75rem;
+  color: rgba(229, 226, 225, 0.6);
+  flex-shrink: 0;
 }
 
 .temp-bar {
@@ -691,6 +707,63 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.state-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 32px;
+}
+
+.spinning {
+  font-size: 48px;
+  color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-icon {
+  font-size: 48px;
+  color: #ef4444;
+}
+
+.state-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+  color: rgba(229, 226, 225, 0.6);
+}
+
+.retry-btn {
+  padding: 8px 24px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 9999px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0 15px rgba(111, 230, 146, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 @media (max-width: 992px) {

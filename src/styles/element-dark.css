@@ -1,0 +1,151 @@
+:root {
+  --el-color-primary: #6fe692;
+  --el-color-primary-light-3: #9aeeb3;
+  --el-color-primary-light-5: #b7f3c9;
+  --el-color-primary-light-7: #d4f8de;
+  --el-color-primary-light-8: #e2fae9;
+  --el-color-primary-light-9: #f1fdf4;
+  --el-color-primary-dark-2: #59b875;
+  --el-text-color-primary: #e5e2e1;
+  --el-text-color-regular: #e5e2e1;
+  --el-text-color-secondary: #bbcbbb;
+  --el-text-color-placeholder: rgba(187, 203, 187, 0.4);
+  --el-text-color-disabled: rgba(229, 226, 225, 0.3);
+  --el-border-color: #3d4a3e;
+  --el-border-color-light: rgba(61, 74, 62, 0.6);
+  --el-border-color-lighter: rgba(61, 74, 62, 0.4);
+  --el-border-color-extra-light: rgba(61, 74, 62, 0.2);
+  --el-fill-color: #2a2a2a;
+  --el-fill-color-light: #201f1f;
+  --el-fill-color-lighter: #1c1b1b;
+  --el-fill-color-extra-light: #1c1b1b;
+  --el-fill-color-dark: #353534;
+  --el-fill-color-darker: #353534;
+  --el-fill-color-blank: #201f1f;
+  --el-bg-color: #201f1f;
+  --el-bg-color-page: #131313;
+  --el-bg-color-overlay: #2a2a2a;
+  --el-table-bg-color: #201f1f;
+  --el-table-tr-bg-color: #201f1f;
+  --el-table-header-bg-color: #2a2a2a;
+  --el-table-row-hover-bg-color: #2a2a2a;
+  --el-table-border-color: #3d4a3e;
+  --el-table-text-color: #e5e2e1;
+  --el-table-header-text-color: #bbcbbb;
+  --el-table-current-row-bg-color: #2a2a2a;
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger: #f56c6c;
+  --el-color-info: #909399;
+  --el-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --el-box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --el-box-shadow-lighter: 0 1px 4px rgba(0, 0, 0, 0.2);
+  --el-box-shadow-dark: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --el-overlay-color: rgba(0, 0, 0, 0.6);
+  --el-overlay-color-light: rgba(0, 0, 0, 0.4);
+  --el-overlay-color-lighter: rgba(0, 0, 0, 0.2);
+}
+
+.el-dialog {
+  background-color: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+}
+
+.el-dialog__title {
+  color: var(--on-surface);
+}
+
+.el-dialog__body {
+  color: var(--on-surface);
+}
+
+.el-dialog__headerbtn .el-dialog__close {
+  color: var(--on-surface-variant);
+}
+
+.el-message-box {
+  background-color: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+}
+
+.el-message-box .el-message-box__title {
+  color: var(--on-surface);
+}
+
+.el-message-box .el-message-box__message {
+  color: var(--on-surface);
+}
+
+.el-form-item__label {
+  color: var(--on-surface-variant);
+}
+
+.el-input__wrapper {
+  background-color: var(--surface-container-low);
+  box-shadow: 0 0 0 1px var(--outline-variant) inset;
+}
+
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--on-surface-variant) inset;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--primary) inset;
+}
+
+.el-input__inner {
+  color: var(--on-surface);
+}
+
+.el-input__inner::placeholder {
+  color: var(--el-text-color-placeholder);
+}
+
+.el-textarea__inner {
+  background-color: var(--surface-container-low);
+  color: var(--on-surface);
+  box-shadow: 0 0 0 1px var(--outline-variant) inset;
+}
+
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1px var(--on-surface-variant) inset;
+}
+
+.el-textarea__inner:focus {
+  box-shadow: 0 0 0 1px var(--primary) inset;
+}
+
+.el-input-number__decrease,
+.el-input-number__increase {
+  background-color: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border-color: var(--outline-variant);
+}
+
+.el-pagination {
+  --el-pagination-bg-color: var(--surface-container);
+  --el-pagination-button-bg-color: var(--surface-container-high);
+  --el-pagination-hover-color: var(--primary);
+}
+
+.el-select-dropdown {
+  background-color: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+}
+
+.el-select-dropdown__item {
+  color: var(--on-surface);
+}
+
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+  background-color: var(--surface-container-high);
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--primary);
+}
+
+.el-message {
+  background-color: var(--surface-container-high);
+  border-color: var(--outline-variant);
+}

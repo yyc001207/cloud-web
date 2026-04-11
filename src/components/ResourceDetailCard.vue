@@ -1,63 +1,62 @@
 <script setup lang="ts">
-import type { Resource } from '../data/resources'
+import type { WebsiteItem } from '../types/website'
 
 interface Props {
-  resource: Resource
+  website: WebsiteItem
+  tabLabel: string
 }
 
 defineProps<Props>()
-
-const tagColorMap = {
-  primary: 'rgba(111, 230, 146, 0.1)',
-  secondary: 'rgba(171, 205, 205, 0.1)',
-  tertiary: 'rgba(255, 192, 172, 0.1)'
-}
-
-const tagTextColorMap = {
-  primary: '#6fe692',
-  secondary: '#abcdcd',
-  tertiary: '#ffc0ac'
-}
 </script>
 
 <template>
   <div class="resource-detail-card">
     <div class="card-left">
       <div class="icon-container">
-        <span class="material-symbols-outlined resource-icon">{{ resource.icon }}</span>
+        <div
+          v-if="website.icon?.type === 'text' && website.icon.text"
+          class="icon-text"
+          :style="{
+            backgroundColor: website.icon.backgroundColor || 'var(--primary)',
+          }"
+        >
+          <span class="icon-text">{{ website.icon.text }}</span>
+        </div>
+        <img
+          v-else-if="website.icon?.type === 'file' && website.icon.url"
+          :src="website.icon.url"
+          class="icon-img"
+        />
+        <span v-else class="material-symbols-outlined resource-icon"
+          >language</span
+        >
       </div>
       <div class="resource-info">
         <div class="name-row">
-          <h3 class="resource-name">{{ resource.name }}</h3>
-          <span
-            class="resource-tag"
-            :style="{
-              backgroundColor: tagColorMap[resource.tagColor],
-              color: tagTextColorMap[resource.tagColor]
-            }"
-          >
-            {{ resource.tag }}
-          </span>
+          <h3 class="resource-name">{{ website.label }}</h3>
+          <span class="resource-tag">{{ tabLabel }}</span>
         </div>
-        <p class="resource-description">{{ resource.description }}</p>
+        <p class="resource-description">{{ website.desc || '' }}</p>
       </div>
     </div>
 
     <div class="card-right">
-      <div class="resource-links">
+      <div
+        v-if="website.document && website.document.length > 0"
+        class="resource-links"
+      >
         <a
-          v-for="link in resource.links"
-          :key="link.label"
-          :href="link.url"
+          v-for="doc in website.document"
+          :key="doc.title"
+          :href="doc.url"
           class="resource-link"
+          target="_blank"
         >
-          <span class="material-symbols-outlined link-icon">{{ link.icon }}</span>
-          {{ link.label }}
+          <span class="material-symbols-outlined link-icon">description</span>
+          {{ doc.title }}
         </a>
       </div>
-      <a :href="resource.actionUrl" class="action-btn">
-        {{ resource.actionLabel }}
-      </a>
+      <a :href="website.url" class="action-btn" target="_blank"> 访问 </a>
     </div>
   </div>
 </template>
@@ -120,6 +119,18 @@ const tagTextColorMap = {
   color: var(--primary);
 }
 
+.icon-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.icon-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
 .resource-info {
   display: flex;
   flex-direction: column;
@@ -149,6 +160,8 @@ const tagTextColorMap = {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  background: rgba(111, 230, 146, 0.1);
+  color: #6fe692;
 }
 
 .resource-description {

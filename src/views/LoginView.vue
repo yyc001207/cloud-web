@@ -1,52 +1,37 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
-import { ElMessage } from 'element-plus'
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const formRef = ref<FormInstance>()
 const passwordVisible = ref(false)
-const loading = ref(false)
 
 const loginForm = reactive({
-  userName: '',
+  username: '',
   password: '',
 })
 
 const rules: FormRules = {
-  userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 }
-
-// 页面加载时检查是否已登录
-onMounted(() => {
-  authStore.initAuth()
-  if (authStore.isAuthenticated) {
-    router.push('/home')
-  }
-})
 
 const handleLogin = async () => {
   if (!formRef.value) return
 
   await formRef.value.validate(async (valid) => {
     if (valid) {
-      loading.value = true
       try {
         await authStore.login({
-          userName: loginForm.userName,
+          userName: loginForm.username,
           password: loginForm.password,
         })
-        ElMessage.success('登录成功')
-        router.push('/home')
-      } catch (error: any) {
-        const message = error.response?.data?.message || '登录失败，请检查用户名和密码'
-        ElMessage.error(message)
-      } finally {
-        loading.value = false
+        const redirect = (router.currentRoute.value.query.redirect as string) || '/home'
+        router.push(redirect)
+      } catch {
       }
     }
   })
@@ -122,12 +107,11 @@ const togglePasswordVisibility = () => {
               <label class="form-label">用户名</label>
               <div class="input-wrapper">
                 <span class="material-symbols-outlined input-icon">person</span>
-                <el-form-item prop="userName" class="form-item">
+                <el-form-item prop="username" class="form-item">
                   <el-input
-                    v-model="loginForm.userName"
-                    placeholder="请输入用户名"
+                    v-model="loginForm.username"
+                    placeholder="nest_curator"
                     class="custom-input"
-                    :disabled="loading"
                   />
                 </el-form-item>
               </div>
@@ -136,6 +120,7 @@ const togglePasswordVisibility = () => {
             <div class="form-group">
               <div class="label-row">
                 <label class="form-label">密码</label>
+                <!-- <a href="#" class="forgot-link">忘记密码？</a> -->
               </div>
               <div class="input-wrapper">
                 <span class="material-symbols-outlined input-icon">lock</span>
@@ -143,10 +128,8 @@ const togglePasswordVisibility = () => {
                   <el-input
                     v-model="loginForm.password"
                     :type="passwordVisible ? 'text' : 'password'"
-                    placeholder="请输入密码"
+                    placeholder="••••••••"
                     class="custom-input"
-                    :disabled="loading"
-                    @keyup.enter="handleLogin"
                   />
                 </el-form-item>
                 <span
@@ -158,14 +141,7 @@ const togglePasswordVisibility = () => {
               </div>
             </div>
             <el-form-item class="submit-item">
-              <button
-                type="submit"
-                class="login-button"
-                :disabled="loading"
-              >
-                <span v-if="loading" class="loading-text">登录中...</span>
-                <span v-else>登录云巢</span>
-              </button>
+              <button type="submit" class="login-button">登录云巢</button>
             </el-form-item>
           </el-form>
         </div>
@@ -426,6 +402,18 @@ const togglePasswordVisibility = () => {
   padding: 0 0.25rem;
 }
 
+.forgot-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(111, 230, 146, 0.8);
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
 .input-wrapper {
   position: relative;
   display: flex;
@@ -495,6 +483,39 @@ const togglePasswordVisibility = () => {
   }
 }
 
+:deep(.custom-checkbox) {
+  .el-checkbox__input {
+    .el-checkbox__inner {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 0.5rem;
+      border: none;
+      background-color: var(--surface-container-high);
+
+      &::after {
+        border-color: var(--surface);
+        border-width: 2px;
+        width: 0.3rem;
+        height: 0.6rem;
+        left: 0.55rem;
+        top: 0.25rem;
+      }
+    }
+
+    &.is-checked {
+      .el-checkbox__inner {
+        background-color: var(--primary);
+      }
+    }
+  }
+
+  .el-checkbox__label {
+    color: var(--on-surface-variant);
+    font-size: 1rem;
+    padding-left: 0.75rem;
+  }
+}
+
 .submit-item {
   margin-bottom: 0;
   padding-top: 0.5rem;
@@ -514,25 +535,37 @@ const togglePasswordVisibility = () => {
   box-shadow: 0 12px 24px rgba(111, 230, 146, 0.2);
   transition: all 0.3s ease;
 
-  &:hover:not(:disabled) {
+  &:hover {
     box-shadow: 0 16px 32px rgba(111, 230, 146, 0.3);
     transform: scale(1.01);
   }
 
-  &:active:not(:disabled) {
+  &:active {
     transform: scale(0.99);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
   }
 }
 
-.loading-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+.register-row {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.register-text {
+  color: var(--on-surface-variant);
+  font-size: 1rem;
+}
+
+.register-link {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 0.25rem;
+  text-underline-offset: 8px;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(111, 230, 146, 0.3);
+  }
 }
 
 // Background Decoration

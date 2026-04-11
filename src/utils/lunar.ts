@@ -187,27 +187,8 @@ export function getNextFestivalCountdown(fromDate: Date = new Date()): { name: s
   }
 }
 
-// 假期日期数组
-const holidayDates = [
-  '2026-01-01', '2026-01-02', '2026-01-03', '2026-02-15', '2026-02-16',
-  '2026-02-17', '2026-02-18', '2026-02-19', '2026-02-20', '2026-02-21',
-  '2026-02-22', '2026-02-23', '2026-04-04', '2026-04-05', '2026-04-06',
-  '2026-05-01', '2026-05-02', '2026-05-03', '2026-05-04', '2026-05-05',
-  '2026-06-19', '2026-06-20', '2026-06-21', '2026-09-25', '2026-09-26',
-  '2026-09-27', '2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04',
-  '2026-10-05', '2026-10-06', '2026-10-07'
-]
-
-// 调休工作日数组
-const adjustmentDates = [
-  '2026-01-04', '2026-02-14', '2026-02-28', '2026-05-09',
-  '2026-09-20', '2026-10-10'
-]
-
-// 日期分类类型
 export type DateClassification = 'holiday' | 'adjustment' | 'regular'
 
-// 将日期格式化为 YYYY-MM-DD 字符串
 function formatDateKey(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -215,7 +196,6 @@ function formatDateKey(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-// 验证日期格式是否为 YYYY-MM-DD
 function isValidDateFormat(dateStr: string): boolean {
   const regex = /^\d{4}-\d{2}-\d{2}$/
   if (!regex.test(dateStr)) return false
@@ -223,15 +203,16 @@ function isValidDateFormat(dateStr: string): boolean {
   return !isNaN(date.getTime())
 }
 
-// 日期分类函数
-export function classifyDate(date: Date): DateClassification {
+export function classifyDate(
+  date: Date,
+  holidayDates: string[] = [],
+  adjustmentDates: string[] = [],
+): DateClassification {
   const dateKey = formatDateKey(date)
 
-  // 验证 holiday 和 adjustment 数组中的日期格式
   const validHolidays = holidayDates.filter(isValidDateFormat)
   const validAdjustments = adjustmentDates.filter(isValidDateFormat)
 
-  // 假期优先级高于调休
   if (validHolidays.includes(dateKey)) {
     return 'holiday'
   }

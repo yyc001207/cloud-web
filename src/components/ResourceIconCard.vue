@@ -1,41 +1,48 @@
 <script setup lang="ts">
-import type { Resource } from '../data/resources'
+import type { WebsiteItem } from '../types/website'
 
 interface Props {
-  resource: Resource
+  website: WebsiteItem
+  tabLabel: string
 }
 
 defineProps<Props>()
-
-const tagColorMap = {
-  primary: 'rgba(111, 230, 146, 0.1)',
-  secondary: 'rgba(171, 205, 205, 0.1)',
-  tertiary: 'rgba(255, 192, 172, 0.1)'
-}
-
-const tagTextColorMap = {
-  primary: '#6fe692',
-  secondary: '#abcdcd',
-  tertiary: '#ffc0ac'
-}
 </script>
 
 <template>
-  <div class="resource-icon-card">
-    <div class="icon-container">
-      <span class="material-symbols-outlined resource-icon">{{ resource.icon }}</span>
+  <a
+    class="resource-icon-card"
+    :href="website.url"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <div
+      v-if="website.icon?.type === 'text' && website.icon.text"
+      class="icon-container"
+      :style="{ backgroundColor: website.icon.backgroundColor || 'var(--primary)' }"
+    >
+      <span class="icon-text">{{ website.icon.text }}</span>
     </div>
-    <h3 class="resource-name">{{ resource.name }}</h3>
+    <div
+      v-else-if="website.icon?.type === 'file' && website.icon.url"
+      class="icon-container"
+    >
+      <img class="icon-img" :src="website.icon.url" alt="" />
+    </div>
+    <div v-else class="icon-container">
+      <span class="material-symbols-outlined resource-icon">language</span>
+    </div>
+    <h3 class="resource-name">{{ website.label }}</h3>
     <span
       class="resource-tag"
       :style="{
-        backgroundColor: tagColorMap[resource.tagColor],
-        color: tagTextColorMap[resource.tagColor]
+        backgroundColor: 'rgba(111, 230, 146, 0.1)',
+        color: '#6fe692'
       }"
     >
-      {{ resource.tag }}
+      {{ tabLabel }}
     </span>
-  </div>
+  </a>
 </template>
 
 <style scoped lang="scss">
@@ -50,6 +57,7 @@ const tagTextColorMap = {
   border: 1px solid rgba(61, 74, 62, 0.1);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
 
   &:hover {
     background: linear-gradient(
@@ -81,6 +89,18 @@ const tagTextColorMap = {
   margin-bottom: 16px;
   transition: transform 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.icon-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.icon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
 .resource-icon {

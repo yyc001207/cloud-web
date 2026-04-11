@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import {
   getLunarDay,
   getLunarMonth,
@@ -9,6 +9,7 @@ import {
   getNextFestivalCountdown,
   classifyDate,
 } from '../utils/lunar'
+import { useHoliday } from '../composables/useHoliday'
 
 const props = defineProps<{
   visible: boolean
@@ -18,11 +19,17 @@ const emit = defineEmits<{
   'update:visible': [value: boolean]
 }>()
 
+const { holidayDates, adjustmentDates, init: initHoliday } = useHoliday()
+
+onMounted(() => {
+  initHoliday()
+})
+
 // 当前显示的月份
 const currentYear = ref(2024)
 const currentMonth = ref(10) // 0-11
 const selectedDate = ref(9)
-const weekStart = ref<'monday' | 'sunday'>('monday')
+const weekStart = ref<'monday' | 'sunday'>('sunday')
 
 const weekDays = computed(() => {
   if (weekStart.value === 'monday') {
@@ -77,7 +84,11 @@ const calendarDays = computed(() => {
     const lunarText = festival || solarTerm || `${lunarMonth}${lunarDay}`
 
     // 获取日期分类（假期/调休/普通）
-    const dateClassification = classifyDate(date)
+    const dateClassification = classifyDate(
+      date,
+      holidayDates.value,
+      adjustmentDates.value,
+    )
 
     days.push({
       day: i,
@@ -251,52 +262,56 @@ watch(
           </div>
 
           <!-- Calendar Grid -->
-          <div class="calendar-body">
-            <!-- Week Days Header -->
-            <div class="week-days">
-              <div v-for="day in weekDays" :key="day" class="week-day">
-                {{ day }}
+          <div class="calendar-scroll-container">
+            <div class="calendar-body">
+              <!-- Week Days Header -->
+              <div class="week-days">
+                <div v-for="day in weekDays" :key="day" class="week-day">
+                  {{ day }}
+                </div>
               </div>
-            </div>
 
-            <!-- Days Grid -->
-            <div class="days-grid">
-              <div
-                v-for="(dayInfo, index) in calendarDays"
-                :key="index"
-                :class="[
-                  'day-cell',
-                  {
-                    'other-month': dayInfo.month !== 'current',
-                    'is-today': dayInfo.isToday,
-                    'is-selected':
-                      dayInfo.day === selectedDate &&
-                      dayInfo.month === 'current',
-                    'is-holiday':
-                      dayInfo.isHoliday && dayInfo.holidayType === 'holiday',
-                    'is-solar':
-                      dayInfo.isHoliday && dayInfo.holidayType === 'solar',
-                    'is-vacation': dayInfo.dateClassification === 'holiday',
-                    'is-adjustment':
-                      dayInfo.dateClassification === 'adjustment',
-                  },
-                ]"
-                @click="dayInfo.month === 'current' && selectDate(dayInfo.day)"
-              >
-                <span class="day-number">{{ dayInfo.day }}</span>
-                <span v-if="dayInfo.month === 'current'" class="lunar-text">
-                  {{ dayInfo.lunarText }}
-                </span>
-                <span
-                  v-if="dayInfo.dateClassification === 'holiday'"
-                  class="date-marker vacation-marker"
-                  >假</span
+              <!-- Days Grid -->
+              <div class="days-grid">
+                <div
+                  v-for="(dayInfo, index) in calendarDays"
+                  :key="index"
+                  :class="[
+                    'day-cell',
+                    {
+                      'other-month': dayInfo.month !== 'current',
+                      'is-today': dayInfo.isToday,
+                      'is-selected':
+                        dayInfo.day === selectedDate &&
+                        dayInfo.month === 'current',
+                      'is-holiday':
+                        dayInfo.isHoliday && dayInfo.holidayType === 'holiday',
+                      'is-solar':
+                        dayInfo.isHoliday && dayInfo.holidayType === 'solar',
+                      'is-vacation': dayInfo.dateClassification === 'holiday',
+                      'is-adjustment':
+                        dayInfo.dateClassification === 'adjustment',
+                    },
+                  ]"
+                  @click="
+                    dayInfo.month === 'current' && selectDate(dayInfo.day)
+                  "
                 >
-                <span
-                  v-if="dayInfo.dateClassification === 'adjustment'"
-                  class="date-marker adjustment-marker"
-                  >班</span
-                >
+                  <span class="day-number">{{ dayInfo.day }}</span>
+                  <span v-if="dayInfo.month === 'current'" class="lunar-text">
+                    {{ dayInfo.lunarText }}
+                  </span>
+                  <span
+                    v-if="dayInfo.dateClassification === 'holiday'"
+                    class="date-marker vacation-marker"
+                    >假</span
+                  >
+                  <span
+                    v-if="dayInfo.dateClassification === 'adjustment'"
+                    class="date-marker adjustment-marker"
+                    >班</span
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -501,8 +516,34 @@ watch(
   }
 }
 
-.calendar-body {
+.calendar-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(80vh - 200px);
   padding: 0 24px 16px;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+.calendar-body {
+  min-height: min-content;
 }
 
 .week-days {
@@ -565,16 +606,28 @@ watch(
   }
 
   &.is-selected {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
     box-shadow: 0 8px 32px rgba(111, 230, 146, 0.4);
     transform: scale(1.05);
     z-index: 1;
 
     .day-number,
     .lunar-text {
-      color: var(--on-primary);
+      color: var(--on-primary) !important;
       font-weight: 800;
+    }
+
+    // Override vacation and adjustment backgrounds when selected
+    &.is-vacation,
+    &.is-adjustment {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+
+      .day-number,
+      .lunar-text {
+        color: var(--on-primary) !important;
+      }
     }
   }
 

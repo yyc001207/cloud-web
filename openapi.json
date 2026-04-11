@@ -49,85 +49,51 @@
                 "tags": [
                     "认证"
                 ],
-                "summary": "用户登出",
-                "description": "用户登出接口，使当前用户的认证令牌失效。需要在请求头中提供有效的认证令牌。",
+                "summary": "Logout",
                 "operationId": "logout_api_user_logout_post",
                 "parameters": [
                     {
-                        "name": "Authorization",
+                        "name": "authorization",
                         "in": "header",
-                        "required": true,
-                        "description": "认证令牌，格式为 'Bearer {token}'",
+                        "required": false,
                         "schema": {
-                            "type": "string",
-                            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
                         }
                     }
                 ],
                 "requestBody": {
-                    "required": false,
-                    "description": "登出请求体（可选，为空对象）",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/LogoutRequest"
-                            },
-                            "example": {}
+                            }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "登出成功",
+                        "description": "Successful Response",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/LogoutResponse"
-                                },
-                                "example": {
-                                    "code": 200,
-                                    "message": "登出成功",
-                                    "data": null
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "未授权 - 认证令牌无效或已过期",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                },
-                                "example": {
-                                    "code": 401,
-                                    "message": "认证令牌无效或已过期",
-                                    "data": null
-                                }
+                                "schema": {}
                             }
                         }
                     },
                     "422": {
-                        "description": "参数验证错误",
+                        "description": "Validation Error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "服务器内部错误",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                },
-                                "example": {
-                                    "code": 500,
-                                    "message": "服务器内部错误",
-                                    "data": null
                                 }
                             }
                         }
@@ -264,6 +230,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TabListRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Successful Response",
@@ -1153,6 +1129,73 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HolidayListRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/proxy/holiday/query": {
+            "post": {
+                "tags": [
+                    "代理服务"
+                ],
+                "summary": "Query Holiday",
+                "operationId": "query_holiday_api_proxy_holiday_query_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HolidayQueryRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Successful Response",
@@ -2050,6 +2093,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaskConfigListRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Successful Response",
@@ -2454,6 +2507,26 @@
                 ],
                 "title": "Body_upload_single_file_api_upload_file_post"
             },
+            "DocumentLink": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title",
+                        "description": "文档标题"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url",
+                        "description": "文档地址"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "url"
+                ],
+                "title": "DocumentLink"
+            },
             "FileCompleteRequest": {
                 "properties": {
                     "fileId": {
@@ -2533,6 +2606,86 @@
                 ],
                 "title": "HolidayCreateRequest"
             },
+            "HolidayListRequest": {
+                "properties": {
+                    "year": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Year",
+                        "description": "按年份过滤"
+                    },
+                    "pageNum": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagenum",
+                        "description": "页码，从 1 开始，与 pageSize 同时传入时生效"
+                    },
+                    "pageSize": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagesize",
+                        "description": "每页数量，与 pageNum 同时传入时生效"
+                    },
+                    "orderBy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderby",
+                        "description": "排序字段：year、createdAt、updatedAt"
+                    },
+                    "orderDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderdir",
+                        "description": "排序方向：asc 或 desc"
+                    }
+                },
+                "type": "object",
+                "title": "HolidayListRequest"
+            },
+            "HolidayQueryRequest": {
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "title": "Year",
+                        "description": "年份"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "year"
+                ],
+                "title": "HolidayQueryRequest"
+            },
             "IconInfo": {
                 "properties": {
                     "type": {
@@ -2611,72 +2764,7 @@
             "LogoutRequest": {
                 "properties": {},
                 "type": "object",
-                "title": "LogoutRequest",
-                "description": "用户登出请求体（可选，通常为空对象）"
-            },
-            "LogoutResponse": {
-                "properties": {
-                    "code": {
-                        "type": "integer",
-                        "title": "Code",
-                        "description": "响应状态码",
-                        "example": 200
-                    },
-                    "message": {
-                        "type": "string",
-                        "title": "Message",
-                        "description": "响应消息",
-                        "example": "登出成功"
-                    },
-                    "data": {
-                        "anyOf": [
-                            {
-                                "type": "object"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Data",
-                        "description": "响应数据（登出成功时为空）",
-                        "example": null
-                    }
-                },
-                "type": "object",
-                "title": "LogoutResponse",
-                "description": "用户登出响应"
-            },
-            "ErrorResponse": {
-                "properties": {
-                    "code": {
-                        "type": "integer",
-                        "title": "Code",
-                        "description": "错误状态码",
-                        "example": 401
-                    },
-                    "message": {
-                        "type": "string",
-                        "title": "Message",
-                        "description": "错误消息",
-                        "example": "认证令牌无效或已过期"
-                    },
-                    "data": {
-                        "anyOf": [
-                            {
-                                "type": "object"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Data",
-                        "description": "错误详情（可选）",
-                        "example": null
-                    }
-                },
-                "type": "object",
-                "title": "ErrorResponse",
-                "description": "错误响应结构"
+                "title": "LogoutRequest"
             },
             "MenuCreateRequest": {
                 "properties": {
@@ -3154,6 +3242,72 @@
                 ],
                 "title": "TabCreateRequest"
             },
+            "TabListRequest": {
+                "properties": {
+                    "pageNum": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagenum",
+                        "description": "页码，从 1 开始，与 pageSize 同时传入时生效"
+                    },
+                    "pageSize": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagesize",
+                        "description": "每页数量，与 pageNum 同时传入时生效"
+                    },
+                    "label": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Label",
+                        "description": "标签名称模糊查询"
+                    },
+                    "orderBy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderby",
+                        "description": "排序字段：order、createdAt、updatedAt"
+                    },
+                    "orderDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderdir",
+                        "description": "排序方向：asc 或 desc"
+                    }
+                },
+                "type": "object",
+                "title": "TabListRequest"
+            },
             "TabUpdateRequest": {
                 "properties": {
                     "id": {
@@ -3203,6 +3357,72 @@
                     "id"
                 ],
                 "title": "TabUpdateRequest"
+            },
+            "TaskConfigListRequest": {
+                "properties": {
+                    "pageNum": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagenum",
+                        "description": "页码，从 1 开始，与 pageSize 同时传入时生效"
+                    },
+                    "pageSize": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Pagesize",
+                        "description": "每页数量，与 pageNum 同时传入时生效"
+                    },
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name",
+                        "description": "任务配置名称模糊查询"
+                    },
+                    "orderBy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderby",
+                        "description": "排序字段：createdAt、updatedAt、name"
+                    },
+                    "orderDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderdir",
+                        "description": "排序方向：asc 或 desc"
+                    }
+                },
+                "type": "object",
+                "title": "TaskConfigListRequest"
             },
             "TextTransferCreateRequest": {
                 "properties": {
@@ -3271,16 +3491,76 @@
                         "description": "按日期查询，格式：YYYY-MM-DD"
                     },
                     "pageNum": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Pagenum",
-                        "description": "页码",
-                        "default": 1
+                        "description": "页码，从 1 开始，与 pageSize 同时传入时生效"
                     },
                     "pageSize": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Pagesize",
-                        "description": "每页大小",
-                        "default": 10
+                        "description": "每页数量，与 pageNum 同时传入时生效"
+                    },
+                    "keyword": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Keyword",
+                        "description": "关键词模糊查询"
+                    },
+                    "status": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Status",
+                        "description": "文件状态过滤：pending、completed"
+                    },
+                    "orderBy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderby",
+                        "description": "排序字段：createdAt、updatedAt、fileSize"
+                    },
+                    "orderDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderdir",
+                        "description": "排序方向：asc 或 desc"
                     }
                 },
                 "type": "object",
@@ -3421,29 +3701,20 @@
                         ],
                         "description": "图标信息"
                     },
-                    "github": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Github",
-                        "description": "GitHub 地址"
-                    },
                     "document": {
                         "anyOf": [
                             {
-                                "type": "string"
+                                "items": {
+                                    "$ref": "#/components/schemas/DocumentLink"
+                                },
+                                "type": "array"
                             },
                             {
                                 "type": "null"
                             }
                         ],
                         "title": "Document",
-                        "description": "文档地址"
+                        "description": "文档链接列表"
                     },
                     "tabId": {
                         "type": "integer",
@@ -3498,16 +3769,52 @@
                         "description": "网站名称模糊查询"
                     },
                     "pageNum": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Pagenum",
-                        "description": "页码",
-                        "default": 1
+                        "description": "页码，从 1 开始，与 pageSize 同时传入时生效"
                     },
                     "pageSize": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Pagesize",
-                        "description": "每页数量，0 表示返回所有",
-                        "default": 0
+                        "description": "每页数量，与 pageNum 同时传入时生效"
+                    },
+                    "orderBy": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderby",
+                        "description": "排序字段：order、label、createdAt、updatedAt"
+                    },
+                    "orderDir": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Orderdir",
+                        "description": "排序方向：asc 或 desc"
                     }
                 },
                 "type": "object",
@@ -3590,29 +3897,20 @@
                         ],
                         "description": "图标信息"
                     },
-                    "github": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Github",
-                        "description": "GitHub 地址"
-                    },
                     "document": {
                         "anyOf": [
                             {
-                                "type": "string"
+                                "items": {
+                                    "$ref": "#/components/schemas/DocumentLink"
+                                },
+                                "type": "array"
                             },
                             {
                                 "type": "null"
                             }
                         ],
                         "title": "Document",
-                        "description": "文档地址"
+                        "description": "文档链接列表"
                     },
                     "tabId": {
                         "anyOf": [

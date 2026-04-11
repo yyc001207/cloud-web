@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Lunar } from 'lunar-javascript'
-import { onMounted, onUnmounted, ref } from 'vue'
-const currentDate = ref('')
-const currentTime = ref('')
+import { ref, onMounted, onUnmounted } from 'vue'
+import { getLunarDay, getLunarMonth } from '../utils/lunar'
 
-// 使用 lunar-javascript 获取农历日期
+const currentTime = ref('')
+const currentDate = ref('')
+
+// 使用 lunar-javascript 库获取准确农历日期
 function getLunarDate(date: Date): string {
-  const lunar = Lunar.fromDate(date)
-  const lunarMonth = lunar.getMonthInChinese()
-  const lunarDay = lunar.getDayInChinese()
-  return `${lunarMonth}月${lunarDay}`
+  const lunarMonth = getLunarMonth(date)
+  const lunarDay = getLunarDay(date)
+  return `${lunarMonth}${lunarDay}`
 }
 
 function updateDateTime() {
@@ -20,15 +20,16 @@ function updateDateTime() {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false
+    hour12: false,
   })
 
-  // 格式化日期 M月D日 农历xx月xx
+  // 格式化日期 YYYY年M月D日 农历xx月xx
+  const year = now.getFullYear()
   const month = now.getMonth() + 1
   const day = now.getDate()
   const lunar = getLunarDate(now)
 
-  currentDate.value = `${month}月${day}日 农历${lunar}`
+  currentDate.value = `${year}年${month}月${day}日 农历${lunar}`
 }
 
 let timer: number | null = null
