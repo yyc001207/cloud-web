@@ -2472,6 +2472,157 @@
                     }
                 }
             }
+        },
+        "/api/openlist/tasks/running": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Get Running Tasks",
+                "operationId": "get_running_tasks_api_openlist_tasks_running_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task/latest-results": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Get Latest Results",
+                "operationId": "get_latest_results_api_openlist_task_latest_results_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/openlist/task/history": {
+            "post": {
+                "tags": [
+                    "OpenList STRM"
+                ],
+                "summary": "Get Task History",
+                "operationId": "get_task_history_api_openlist_task_history_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaskHistoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -3423,6 +3574,20 @@
                 },
                 "type": "object",
                 "title": "TaskConfigListRequest"
+            },
+            "TaskHistoryRequest": {
+                "properties": {
+                    "taskConfigId": {
+                        "type": "integer",
+                        "title": "Taskconfigid",
+                        "description": "任务配置 ID"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "taskConfigId"
+                ],
+                "title": "TaskHistoryRequest"
             },
             "TextTransferCreateRequest": {
                 "properties": {

@@ -163,10 +163,12 @@ onMounted(() => {
       </el-button>
     </div>
 
+    <div class="table-wrapper">
     <el-table
       :data="tableData"
       v-loading="loading"
       @selection-change="handleSelectionChange"
+      max-height="calc(100vh - 380px)"
     >
       <el-table-column type="selection" width="50" />
       <el-table-column
@@ -214,6 +216,7 @@ onMounted(() => {
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <div class="pagination-bar">
       <el-pagination
@@ -254,6 +257,10 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .holiday-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   .page-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -266,6 +273,7 @@ onMounted(() => {
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
+    flex-shrink: 0;
 
     .search-input {
       width: 240px;
@@ -277,6 +285,7 @@ onMounted(() => {
     align-items: center;
     gap: 12px;
     margin-bottom: 16px;
+    flex-shrink: 0;
   }
 
   .btn-icon {
@@ -289,6 +298,12 @@ onMounted(() => {
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
+    flex-shrink: 0;
+  }
+
+  .table-wrapper {
+    flex: 1;
+    min-height: 0;
   }
 
   .date-tag {

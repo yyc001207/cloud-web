@@ -58,15 +58,15 @@ function navigateTo(path: string) {
 
 <style scoped lang="scss">
 .admin-layout {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: var(--surface);
 }
 
-// 主体区域
 .admin-body {
   display: flex;
   padding-top: 80px;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 // 左侧菜单
@@ -121,20 +121,21 @@ function navigateTo(path: string) {
   font-size: 0.875rem;
 }
 
-// 主内容区
 .admin-main {
   flex: 1;
   margin-left: 220px;
   padding: 24px 32px;
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
-// 页面内容
 .admin-content {
   background: var(--surface-container-low);
   border-radius: 12px;
   padding: 24px;
-  min-height: calc(100vh - 200px);
+  height: calc(100vh - 80px - 48px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 // 响应式

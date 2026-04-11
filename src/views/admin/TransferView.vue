@@ -13,6 +13,10 @@
 
 <style scoped lang="scss">
 .transfer-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   .page-title {
     font-size: 1.5rem;
     font-weight: 700;
