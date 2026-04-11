@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
+const viewModules = import.meta.glob('../views/admin/*.vue') as Record<string, () => Promise<any>>
+
 export interface AdminRouteConfig {
   path: string
   name: string
@@ -47,22 +49,22 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
     componentPath: '../views/admin/OpenListView.vue'
   },
-  // {
-  //   path: 'transfer',
-  //   name: 'Transfer',
-  //   meta: {
-  //     title: '中转站',
-  //     icon: 'swap_horiz'
-  //   },
-  //   componentPath: '../views/admin/TransferView.vue'
-  // }
+  {
+    path: 'transfer',
+    name: 'Transfer',
+    meta: {
+      title: '中转站',
+      icon: 'swap_horiz'
+    },
+    componentPath: '../views/admin/TransferView.vue'
+  }
 ]
 
 export const getAdminRouteRecords = (): RouteRecordRaw[] => {
   return adminRoutes.map(route => ({
     path: route.path,
     name: route.name,
-    component: () => import(route.componentPath),
+    component: viewModules[route.componentPath],
     meta: route.meta
   }))
 }
