@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import {
@@ -26,8 +26,9 @@ import type {
   OpenListTaskConfigUpdateRequest,
   OpenListExecuteRequest,
   RunningTaskItem,
-  TaskResultItem,
-  TaskHistoryRequest,
+  LatestResultItem,
+  TaskHistoryLatestDetail,
+  TaskHistoryListItem,
 } from '../../types/openlist'
 
 const activeTab = ref('global')
@@ -362,12 +363,6 @@ const executeFormData = reactive<{
 
 const runningTasks = ref<RunningTaskItem[]>([])
 const runningLoading = ref(false)
-const latestResults = ref<TaskResultItem[]>([])
-const latestLoading = ref(false)
-const historyTaskConfigId = ref<number | null>(null)
-const historyData = ref<TaskResultItem[]>([])
-const historyLoading = ref(false)
-const historyTaskOptions = ref<OpenListTaskConfigItem[]>([])
 
 async function loadExecuteOptions() {
   try {
@@ -398,6 +393,7 @@ async function handleExecute() {
       force: executeFormData.force,
     }
     await executeTask(data)
+    loadRunningTasks()
     ElMessage.success('任务执行成功')
   } catch {
   } finally {
@@ -417,43 +413,6 @@ async function loadRunningTasks() {
   }
 }
 
-async function loadLatestResults() {
-  latestLoading.value = true
-  try {
-    const res = await getLatestResults()
-    latestResults.value = res.data || []
-  } catch {
-    latestResults.value = []
-  } finally {
-    latestLoading.value = false
-  }
-}
-
-async function loadHistoryOptions() {
-  try {
-    const res = await getTaskConfigList({ pageSize: 1000 })
-    historyTaskOptions.value = res.data || []
-  } catch {}
-}
-
-async function loadTaskHistory() {
-  if (!historyTaskConfigId.value) {
-    ElMessage.warning('请选择任务配置')
-    return
-  }
-  historyLoading.value = true
-  try {
-    const res = await getTaskHistory({
-      taskConfigId: historyTaskConfigId.value,
-    })
-    historyData.value = res.data || []
-  } catch {
-    historyData.value = []
-  } finally {
-    historyLoading.value = false
-  }
-}
-
 async function handleCancelRunning(taskId: string) {
   await ElMessageBox.confirm('确定取消该任务吗？', '提示', {
     confirmButtonText: '确定',
@@ -467,12 +426,52 @@ async function handleCancelRunning(taskId: string) {
   } catch {}
 }
 
+const historyList = ref<LatestResultItem[]>([])
+const historyLoading = ref(false)
+
+const historyDetailVisible = ref(false)
+const historyDetailLoading = ref(false)
+const historyDetailData = ref<TaskHistoryLatestDetail | null>(null)
+const historyDetailTaskName = ref('')
+const historyDetailHistoryList = ref<TaskHistoryListItem[]>([])
+
+async function loadHistoryList() {
+  historyLoading.value = true
+  try {
+    const res = await getLatestResults()
+    historyList.value = res.data || []
+  } catch {
+    historyList.value = []
+  } finally {
+    historyLoading.value = false
+  }
+}
+
+async function handleHistoryDetail(row: LatestResultItem) {
+  historyDetailVisible.value = true
+  historyDetailLoading.value = true
+  historyDetailData.value = null
+  historyDetailTaskName.value = ''
+  historyDetailHistoryList.value = []
+  try {
+    const res = await getTaskHistory({ taskConfigId: row.taskConfigId })
+    historyDetailTaskName.value = res.data?.taskName || row.taskName
+    historyDetailData.value = res.data?.latestDetail || null
+    historyDetailHistoryList.value = res.data?.historyList || []
+  } catch {
+    historyDetailData.value = null
+    historyDetailHistoryList.value = []
+  } finally {
+    historyDetailLoading.value = false
+  }
+}
+
 function getStatusType(
   status: string,
 ): 'success' | 'warning' | 'danger' | 'info' {
-  if (status === 'completed' || status === 'success') return 'success'
-  if (status === 'running') return 'warning'
-  if (status === 'failed') return 'danger'
+  if (status === 'completed' || status === 'success' || status === '成功') return 'success'
+  if (status === 'running' || status === '运行中') return 'warning'
+  if (status === 'failed' || status === '失败') return 'danger'
   return 'info'
 }
 
@@ -484,12 +483,91 @@ function getStatusLabel(status: string): string {
     success: '成功',
     failed: '失败',
     cancelled: '已取消',
+    '成功': '成功',
+    '失败': '失败',
+    '运行中': '运行中',
   }
   return map[status] || status
 }
 
+const logMessages = ref<string[]>([])
+const logConnected = ref(false)
+const logConnecting = ref(false)
+let logWs: WebSocket | null = null
+const logContainerRef = ref<HTMLElement | null>(null)
+
+function getWsUrl(): string {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+ return `${protocol}//${window.location.host}/api/ws/logs`
+}
+
+function handleLogConnect() {
+  if (
+    logWs &&
+    (logWs.readyState === WebSocket.OPEN ||
+      logWs.readyState === WebSocket.CONNECTING)
+  ) {
+    return
+  }
+  logConnecting.value = true
+  logConnected.value = false
+  const wsUrl = getWsUrl()
+  logWs = new WebSocket(wsUrl)
+
+  logWs.onopen = () => {
+    logConnected.value = true
+    logConnecting.value = false
+  }
+
+  logWs.onmessage = event => {
+    logMessages.value.push(event.data)
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
+
+  logWs.onclose = () => {
+    logConnected.value = false
+    logConnecting.value = false
+    logWs = null
+  }
+
+  logWs.onerror = () => {
+    logConnected.value = false
+    logConnecting.value = false
+    ElMessage.error('WebSocket 连接失败')
+    logWs = null
+  }
+}
+
+function handleLogDisconnect() {
+  if (logWs) {
+    logWs.close()
+    logWs = null
+  }
+  logConnected.value = false
+  logConnecting.value = false
+}
+
+function handleLogClear() {
+  logMessages.value = []
+}
+
+function scrollToBottom() {
+  if (logContainerRef.value) {
+    logContainerRef.value.scrollTop = logContainerRef.value.scrollHeight
+  }
+}
+
 function handleTabClick(tab: string) {
   activeTab.value = tab
+  if (tab === 'execute') {
+    loadExecuteOptions()
+    loadRunningTasks()
+  }
+  if (tab === 'history') {
+    loadHistoryList()
+  }
 }
 
 watch([taskCurrentPage, taskPageSize], () => {
@@ -499,7 +577,9 @@ watch([taskCurrentPage, taskPageSize], () => {
 watch(activeTab, val => {
   if (val === 'execute') {
     loadRunningTasks()
-    loadLatestResults()
+  }
+  if (val === 'history') {
+    loadHistoryList()
   }
 })
 
@@ -507,7 +587,6 @@ onMounted(() => {
   loadGlobalData()
   loadTaskData()
   loadExecuteOptions()
-  loadHistoryOptions()
 })
 </script>
 
@@ -534,9 +613,25 @@ onMounted(() => {
       >
         执行管理
       </button>
+      <button
+        :class="['tab-btn', { active: activeTab === 'history' }]"
+        @click="handleTabClick('history')"
+      >
+        任务历史
+      </button>
+      <button
+        :class="['tab-btn', { active: activeTab === 'log' }]"
+        @click="handleTabClick('log')"
+      >
+        实时日志
+      </button>
     </div>
 
-    <div v-if="activeTab === 'global'" v-loading="globalLoading" class="tab-content">
+    <div
+      v-if="activeTab === 'global'"
+      v-loading="globalLoading"
+      class="tab-content"
+    >
       <div v-if="!globalConfigData" class="global-empty">
         <p class="empty-text">暂无全局配置，请先新增</p>
         <el-button type="success" @click="handleGlobalAdd">
@@ -813,105 +908,191 @@ onMounted(() => {
           </el-table-column>
         </el-table>
       </div>
+    </div>
 
-      <div class="execute-section">
-        <div class="section-header">
-          <h3 class="section-title">最新结果</h3>
-          <el-button size="small" @click="loadLatestResults">
-            <span class="material-symbols-outlined btn-icon">refresh</span>
-            刷新
-          </el-button>
-        </div>
-        <el-table
-          :data="latestResults"
-          v-loading="latestLoading"
-          empty-text="暂无执行结果"
-          max-height="300"
-        >
-          <el-table-column
-            prop="taskConfigName"
-            label="任务名称"
-            min-width="150"
-          />
-          <el-table-column prop="status" label="状态" width="120">
-            <template #default="{ row }">
-              <el-tag :type="getStatusType(row.status)" size="small">{{
-                getStatusLabel(row.status)
-              }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="totalFiles" label="总文件数" width="100">
-            <template #default="{ row }">{{ row.totalFiles ?? '-' }}</template>
-          </el-table-column>
-          <el-table-column prop="processedFiles" label="已处理" width="100">
-            <template #default="{ row }">{{
-              row.processedFiles ?? '-'
-            }}</template>
-          </el-table-column>
-          <el-table-column prop="failedFiles" label="失败" width="100">
-            <template #default="{ row }">{{ row.failedFiles ?? '-' }}</template>
-          </el-table-column>
-          <el-table-column prop="startTime" label="开始时间" width="180" />
-          <el-table-column prop="endTime" label="结束时间" width="180">
-            <template #default="{ row }">{{ row.endTime ?? '-' }}</template>
-          </el-table-column>
-        </el-table>
+    <div
+      v-if="activeTab === 'history'"
+      v-loading="historyLoading"
+      class="tab-content"
+    >
+      <div class="section-header" style="margin-bottom: 16px">
+        <el-button size="small" @click="loadHistoryList">
+          <span class="material-symbols-outlined btn-icon">refresh</span>
+          刷新
+        </el-button>
       </div>
+      <el-table
+        :data="historyList"
+        empty-text="暂无执行历史"
+        max-height="calc(100vh - 320px)"
+      >
+        <el-table-column type="index" label="序号" width="70" />
+        <el-table-column
+          prop="taskName"
+          label="任务名称"
+          min-width="150"
+        />
+        <el-table-column prop="executionStatus" label="执行状态" width="120">
+          <template #default="{ row }">
+            <el-tag :type="getStatusType(row.executionStatus)" size="small">{{
+              getStatusLabel(row.executionStatus)
+            }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="执行信息" min-width="220">
+          <template #default="{ row }">
+            {{ row.executionInfo }}
+          </template>
+        </el-table-column>
+        <el-table-column label="执行时间" width="200">
+          <template #default="{ row }">
+            {{ row.executionTime }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="success" @click="handleHistoryDetail(row)"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
 
-      <div class="execute-section">
-        <h3 class="section-title">任务历史</h3>
-        <div class="search-bar" style="margin-bottom: 12px">
-          <el-select
-            v-model="historyTaskConfigId"
-            placeholder="请选择任务配置"
-            style="width: 240px"
+      <el-dialog
+        v-model="historyDetailVisible"
+        title="任务执行详情"
+        width="640px"
+        @close="
+          historyDetailData = null;
+          historyDetailHistoryList = []
+        "
+      >
+        <div v-loading="historyDetailLoading">
+          <template v-if="historyDetailData">
+            <div class="detail-grid" style="margin-bottom: 24px">
+              <div class="detail-item">
+                <span class="detail-label">任务名称</span>
+                <span class="detail-value">{{ historyDetailTaskName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">执行状态</span>
+                <span class="detail-value">
+                  <el-tag
+                    :type="getStatusType(historyDetailData.executionStatus)"
+                    size="small"
+                    >{{ getStatusLabel(historyDetailData.executionStatus) }}</el-tag
+                  >
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">总视频数</span>
+                <span class="detail-value">{{ historyDetailData.totalVideos ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">成功视频数</span>
+                <span class="detail-value">{{ historyDetailData.successVideos ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">成功字幕数</span>
+                <span class="detail-value">{{ historyDetailData.successSubtitles ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">失败字幕数</span>
+                <span class="detail-value">{{ historyDetailData.errorSubtitles ?? '-' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">执行时间</span>
+                <span class="detail-value">{{ historyDetailData.executionTime }}</span>
+              </div>
+            </div>
+          </template>
+
+          <h4
+            style="
+              font-size: 1rem;
+              font-weight: 600;
+              color: var(--on-surface);
+              margin-bottom: 12px;
+            "
           >
-            <el-option
-              v-for="item in historyTaskOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-          <el-button type="success" @click="loadTaskHistory">
-            <span class="material-symbols-outlined btn-icon">search</span>
-            查询
+            历史执行记录
+          </h4>
+          <el-table
+            :data="historyDetailHistoryList"
+            empty-text="暂无历史记录"
+            max-height="300"
+            size="small"
+          >
+            <el-table-column type="index" label="序号" width="60" />
+            <el-table-column prop="executionStatus" label="状态" width="100">
+              <template #default="{ row }">
+                <el-tag :type="getStatusType(row.executionStatus)" size="small">{{
+                  getStatusLabel(row.executionStatus)
+                }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="执行信息" min-width="200">
+              <template #default="{ row }">
+                {{ row.executionInfo }}
+              </template>
+            </el-table-column>
+            <el-table-column label="执行时间" width="180">
+              <template #default="{ row }">
+                {{ row.executionTime }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-dialog>
+    </div>
+
+    <div v-if="activeTab === 'log'" class="tab-content">
+      <div class="log-toolbar">
+        <div class="log-status">
+          <span
+            class="status-dot"
+            :class="{ connected: logConnected, connecting: logConnecting }"
+          ></span>
+          <span class="status-text">{{
+            logConnected ? '已连接' : logConnecting ? '连接中...' : '未连接'
+          }}</span>
+        </div>
+        <div class="log-actions">
+          <el-button
+            v-if="!logConnected && !logConnecting"
+            type="success"
+            size="small"
+            @click="handleLogConnect"
+          >
+            <span class="material-symbols-outlined btn-icon">link</span>
+            连接
+          </el-button>
+          <el-button
+            v-if="logConnected || logConnecting"
+            type="danger"
+            size="small"
+            @click="handleLogDisconnect"
+          >
+            <span class="material-symbols-outlined btn-icon">link_off</span>
+            断开
+          </el-button>
+          <el-button
+            size="small"
+            @click="handleLogClear"
+            :disabled="logMessages.length === 0"
+          >
+            <span class="material-symbols-outlined btn-icon">delete_sweep</span>
+            清空
           </el-button>
         </div>
-        <el-table
-          :data="historyData"
-          v-loading="historyLoading"
-          empty-text="暂无历史记录"
-          max-height="300"
-        >
-          <el-table-column
-            prop="taskConfigName"
-            label="任务名称"
-            min-width="150"
-          />
-          <el-table-column prop="status" label="状态" width="120">
-            <template #default="{ row }">
-              <el-tag :type="getStatusType(row.status)" size="small">{{
-                getStatusLabel(row.status)
-              }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="totalFiles" label="总文件数" width="100">
-            <template #default="{ row }">{{ row.totalFiles ?? '-' }}</template>
-          </el-table-column>
-          <el-table-column prop="processedFiles" label="已处理" width="100">
-            <template #default="{ row }">{{
-              row.processedFiles ?? '-'
-            }}</template>
-          </el-table-column>
-          <el-table-column prop="failedFiles" label="失败" width="100">
-            <template #default="{ row }">{{ row.failedFiles ?? '-' }}</template>
-          </el-table-column>
-          <el-table-column prop="startTime" label="开始时间" width="180" />
-          <el-table-column prop="endTime" label="结束时间" width="180">
-            <template #default="{ row }">{{ row.endTime ?? '-' }}</template>
-          </el-table-column>
-        </el-table>
+      </div>
+      <div ref="logContainerRef" class="log-container">
+        <div v-if="logMessages.length === 0" class="log-empty">
+          <p class="empty-text">暂无日志，请点击"连接"按钮开始接收</p>
+        </div>
+        <div v-for="(msg, index) in logMessages" :key="index" class="log-line">
+          {{ msg }}
+        </div>
       </div>
     </div>
 
@@ -1205,6 +1386,93 @@ onMounted(() => {
 
     .execute-form {
       max-width: 560px;
+    }
+  }
+
+  .log-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+
+    .log-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--on-surface-variant);
+        opacity: 0.4;
+
+        &.connected {
+          background: #6fe692;
+          opacity: 1;
+        }
+
+        &.connecting {
+          background: #e6a23c;
+          opacity: 1;
+          animation: pulse 1s infinite;
+        }
+      }
+
+      .status-text {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+      }
+    }
+
+    .log-actions {
+      display: flex;
+      gap: 8px;
+    }
+  }
+
+  .log-container {
+    flex: 1;
+    min-height: 0;
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+    background: var(--surface-container-lowest);
+    border: 1px solid rgba(61, 74, 62, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+
+    .log-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+
+      .empty-text {
+        font-size: 0.875rem;
+        color: var(--on-surface-variant);
+        opacity: 0.6;
+      }
+    }
+
+    .log-line {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--on-surface);
+      padding: 2px 0;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
     }
   }
 }

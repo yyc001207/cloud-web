@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { getAdminRouteRecords } from '../utils/routeConfig'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,33 +23,7 @@ const routes: RouteRecordRaw[] = [
     path: '/admin',
     component: () => import('../components/AdminLayout.vue'),
     redirect: '/admin/tab',
-    children: [
-      {
-        path: 'tab',
-        name: 'Tab',
-        component: () => import('../views/admin/TabView.vue')
-      },
-      {
-        path: 'website',
-        name: 'Website',
-        component: () => import('../views/admin/WebsiteView.vue')
-      },
-      {
-        path: 'holiday',
-        name: 'Holiday',
-        component: () => import('../views/admin/HolidayView.vue')
-      },
-      {
-        path: 'openlist',
-        name: 'OpenList',
-        component: () => import('../views/admin/OpenListView.vue')
-      },
-      {
-        path: 'transfer',
-        name: 'Transfer',
-        component: () => import('../views/admin/TransferView.vue')
-      }
-    ]
+    children: getAdminRouteRecords()
   }
 ]
 

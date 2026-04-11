@@ -78,7 +78,11 @@ export interface RunningTaskItem {
     taskConfigName: string
     status: string
     startTime: string
+    endTime: string | null
     progress: number | null
+    totalFiles: number | null
+    processedFiles: number | null
+    failedFiles: number | null
 }
 
 export interface TaskResultItem {
@@ -91,6 +95,10 @@ export interface TaskResultItem {
     totalFiles: number | null
     processedFiles: number | null
     failedFiles: number | null
+    totalVideos: number | null
+    successVideos: number | null
+    successSubtitles: number | null
+    failedSubtitles: number | null
 }
 
 export interface OpenListListResponse<T> {
@@ -104,4 +112,52 @@ export interface OpenListActionResponse {
     code: number
     msg: string
     data: unknown
+}
+
+export interface TaskHistoryDetailResponse {
+    code: number
+    msg: string
+    data: TaskResultItem
+}
+
+export interface LatestResultItem {
+    taskConfigId: number
+    taskName: string
+    executionStatus: string
+    executionInfo: string
+    executionTime: string
+}
+
+export interface TaskHistoryLatestDetail {
+    executionStatus: string
+    totalVideos: number
+    successVideos: number
+    successSubtitles: number
+    errorSubtitles: number
+    executionTime: string
+}
+
+export interface TaskHistoryListItem {
+    executionStatus: string
+    executionInfo: string
+    executionTime: string
+}
+
+export interface TaskHistoryData {
+    taskConfigId: number
+    taskName: string
+    latestDetail: TaskHistoryLatestDetail
+    historyList: TaskHistoryListItem[]
+}
+
+export interface TaskHistoryResponse {
+    code: number
+    msg: string
+    data: TaskHistoryData
+}
+
+export interface LatestResultsResponse {
+    code: number
+    msg: string
+    data: LatestResultItem[]
 }

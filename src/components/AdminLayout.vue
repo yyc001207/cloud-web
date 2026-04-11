@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 import HeaderCore from './header/HeaderCore.vue'
+import { getMenuItems } from '../utils/routeConfig'
 
 const route = useRoute()
 const router = useRouter()
 
 // 菜单配置
-const menuItems = [
-  { path: '/admin/tab', name: '标签页管理', icon: 'tab' },
-  { path: '/admin/website', name: '网站管理', icon: 'language' },
-  { path: '/admin/holiday', name: '节假日管理', icon: 'event' },
-  { path: '/admin/openlist', name: 'openList管理', icon: 'list' },
-  { path: '/admin/transfer', name: '中转站', icon: 'swap_horiz' },
-]
+const menuItems = getMenuItems()
 
 function navigateTo(path: string) {
   router.push(path)
 }
-
-
 </script>
 
 <template>

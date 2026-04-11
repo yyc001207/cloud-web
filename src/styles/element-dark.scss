@@ -170,3 +170,15 @@ $surface-container-highest: #353534;
     background-color: var(--surface-container-high);
     border-color: var(--outline-variant);
 }
+
+.el-loading-mask {
+    background-color: rgba(14, 14, 14, 0.7);
+}
+
+.el-loading-spinner .circular .path {
+    stroke: var(--primary);
+}
+
+.el-loading-spinner .el-loading-text {
+    color: var(--on-surface-variant);
+}

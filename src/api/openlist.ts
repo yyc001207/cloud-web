@@ -13,6 +13,13 @@ import type {
     TaskResultItem,
     OpenListListResponse,
     OpenListActionResponse,
+    TaskHistoryDetailResponse,
+    LatestResultItem,
+    TaskHistoryLatestDetail,
+    TaskHistoryListItem,
+    TaskHistoryData,
+    TaskHistoryResponse,
+    LatestResultsResponse,
 } from '../types/openlist'
 
 export function getGlobalConfig() {
@@ -60,9 +67,13 @@ export function getRunningTasks() {
 }
 
 export function getLatestResults() {
-    return request.post<OpenListListResponse<TaskResultItem>>('/api/openlist/task/latest-results')
+    return request.post<LatestResultsResponse>('/api/openlist/task/latest-results')
 }
 
 export function getTaskHistory(data: TaskHistoryRequest) {
-    return request.post<OpenListListResponse<TaskResultItem>>('/api/openlist/task/history', data)
+    return request.post<TaskHistoryResponse>('/api/openlist/task/history', data)
+}
+
+export function getTaskHistoryDetail(taskConfigId: number) {
+    return request.post<TaskHistoryDetailResponse>('/api/openlist/task/history/detail', { taskConfigId })
 }

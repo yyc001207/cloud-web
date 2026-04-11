@@ -1860,6 +1860,79 @@
                 }
             }
         },
+        "/api/transfer/file/download": {
+            "post": {
+                "tags": [
+                    "中转站"
+                ],
+                "summary": "Download File",
+                "operationId": "download_file_api_transfer_file_download_post",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Authorization"
+                        }
+                    },
+                    {
+                        "name": "range",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Range"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileDownloadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/openlist/global-config": {
             "post": {
                 "tags": [
@@ -2697,6 +2770,20 @@
                     "totalChunks"
                 ],
                 "title": "FileCompleteRequest"
+            },
+            "FileDownloadRequest": {
+                "properties": {
+                    "fileId": {
+                        "type": "integer",
+                        "title": "Fileid",
+                        "description": "文件 ID"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "fileId"
+                ],
+                "title": "FileDownloadRequest"
             },
             "FileTransferCreateRequest": {
                 "properties": {
