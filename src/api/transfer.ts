@@ -42,6 +42,7 @@ export function uploadChunk(fileId: number, chunkIndex: number, chunk: Blob) {
     formData.append('chunk', chunk)
     return service.post(`/api/transfer/file/chunk?fileId=${fileId}&chunkIndex=${chunkIndex}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120000,
     })
 }
 
@@ -57,4 +58,19 @@ export function downloadFile(data: FileDownloadRequest) {
     return service.post('/api/transfer/file/download', data, {
         responseType: 'blob',
     })
+}
+
+export function directUploadFile(file: File) {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('filename', file.name)
+    formData.append('fileSize', String(file.size))
+    formData.append('contentType', file.type || 'application/octet-stream')
+    return service.post('/api/transfer/file/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    })
+}
+
+export function updateFileStatus(id: number, status: string) {
+    return request.post<TransferActionResponse>('/api/transfer/file/update', { id, status })
 }

@@ -10,6 +10,8 @@ import {
   uploadChunk,
   completeFile,
   deleteFile,
+  directUploadFile,
+  updateFileStatus,
 } from '../../api/transfer'
 import type { TextTransferItem, FileTransferItem } from '../../types/transfer'
 
@@ -173,6 +175,7 @@ function getFileStatus(status: string) {
   const map: Record<string, string> = {
     pending: '上传中',
     completed: '已完成',
+    failed: '失败',
   }
   return map[status] || status
 }
@@ -181,6 +184,7 @@ function getFileStatusType(status: string) {
   const map: Record<string, string> = {
     pending: 'warning',
     completed: 'success',
+    failed: 'danger',
   }
   return map[status] || 'info'
 }
@@ -200,29 +204,51 @@ async function handleFileSelect(event: Event) {
   loadFileList()
 }
 
-async function uploadFile(file: File) {
-  const CHUNK_SIZE = 5 * 1024 * 1024
-  const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
-  const fileKey = `${file.name}-${file.size}`
-
-  let fileHash = ''
+async function computeFileHash(file: File): Promise<string> {
   try {
-    const buffer = await file.arrayBuffer()
+    const CHUNK_SIZE = 2 * 1024 * 1024
+    const buffer = new Uint8Array(await file.slice(0, CHUNK_SIZE).arrayBuffer())
     const hashBuffer = await crypto.subtle.digest('SHA-256', buffer)
     const hashArray = Array.from(new Uint8Array(hashBuffer))
-    fileHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    const partial = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    return `${partial}-${file.size}`
   } catch {
-    fileHash = `${file.name}-${file.size}-${Date.now()}`
+    return `${file.name}-${file.size}-${Date.now()}`
+  }
+}
+
+async function uploadFile(file: File) {
+  const CHUNK_SIZE = 5 * 1024 * 1024
+  const DIRECT_UPLOAD_MAX_SIZE = 5 * 1024 * 1024
+  const fileKey = `${file.name}-${file.size}`
+
+  if (file.size < DIRECT_UPLOAD_MAX_SIZE) {
+    try {
+      uploadingFiles.value.set(fileKey, 50)
+      await directUploadFile(file)
+      uploadingFiles.value.delete(fileKey)
+      ElMessage.success(`${file.name} 上传成功`)
+    } catch {
+      uploadingFiles.value.delete(fileKey)
+    }
+    return
   }
 
+  const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
+
+  const fileHash = await computeFileHash(file)
+
+  let fileId: number | null = null
   try {
+    uploadingFiles.value.set(fileKey, 5)
     const createRes = await createFile({
       filename: file.name,
       fileSize: file.size,
       fileHash,
       contentType: file.type || 'application/octet-stream',
     })
-    const fileId = (createRes as { data: { id: number } }).data?.id
+    const resData = (createRes as any)?.data
+    fileId = resData?.id
     if (!fileId) {
       ElMessage.error('创建文件记录失败')
       return
@@ -233,20 +259,24 @@ async function uploadFile(file: File) {
       const end = Math.min(start + CHUNK_SIZE, file.size)
       const chunk = file.slice(start, end)
 
-      uploadingFiles.value.set(
-        fileKey,
-        Math.round(((i + 1) / totalChunks) * 100),
-      )
+      const progress = Math.round(((i + 1) / totalChunks) * 90) + 5
+      uploadingFiles.value.set(fileKey, progress)
 
       await uploadChunk(fileId, i, chunk)
     }
 
+    uploadingFiles.value.set(fileKey, 98)
     await completeFile({ fileId, totalChunks })
     uploadingFiles.value.delete(fileKey)
     ElMessage.success(`${file.name} 上传成功`)
   } catch {
     uploadingFiles.value.delete(fileKey)
-    ElMessage.error(`${file.name} 上传失败`)
+    if (fileId) {
+      try {
+        await updateFileStatus(fileId, 'failed')
+      } catch {}
+      loadFileList()
+    }
   }
 }
 
@@ -261,6 +291,12 @@ async function handleDeleteFile(row: FileTransferItem) {
     ElMessage.success('删除成功')
     loadFileList()
   } catch {}
+}
+
+function handleDownloadFile(row: FileTransferItem) {
+  const token = localStorage.getItem('token') || ''
+  const url = `/api/transfer/file/download/${row.id}?token=${encodeURIComponent(token)}`
+  window.open(url, '_blank')
 }
 
 async function handleBatchDeleteFile() {
@@ -365,7 +401,7 @@ onMounted(() => {
           :page-sizes="[10, 20, 50]"
           layout="total, sizes, prev, pager, next"
           background
-          small
+          size="small"
         />
       </div>
 
@@ -489,8 +525,15 @@ onMounted(() => {
               {{ formatTime(row.createdAt) }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100" fixed="right">
+          <el-table-column label="操作" width="140" fixed="right">
             <template #default="{ row }">
+              <el-button
+                v-if="row.status === 'completed'"
+                link
+                type="success"
+                @click="handleDownloadFile(row)"
+                >下载</el-button
+              >
               <el-button link type="danger" @click="handleDeleteFile(row)"
                 >删除</el-button
               >

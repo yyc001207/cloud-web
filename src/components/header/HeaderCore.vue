@@ -6,10 +6,19 @@ import WeatherDetailModal from '../WeatherDetailModal.vue'
 import CalendarModal from '../CalendarModal.vue'
 import { useRouter } from 'vue-router'
 import { useWeather } from '../../composables/useWeather'
+import { useAuthStore } from '../../stores/auth'
 
 const showWeatherModal = ref(false)
 const showCalendarModal = ref(false)
 const router = useRouter()
+const authStore = useAuthStore()
+
+async function handleUserCommand(command: string) {
+  if (command === 'logout') {
+    await authStore.logout()
+    router.push('/login')
+  }
+}
 
 const {
   currentWeather,
@@ -60,12 +69,22 @@ function openCalendarModal() {
         />
       </div>
 
-      <div class="user-avatar">
-        <img
-          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-          alt="User avatar"
-        />
-      </div>
+      <el-dropdown trigger="click" @command="handleUserCommand">
+        <div class="user-avatar">
+          <img
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+            alt="User avatar"
+          />
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="logout">
+              <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle; margin-right: 4px;">logout</span>
+              退出登录
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
   </header>
 

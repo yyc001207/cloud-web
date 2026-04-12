@@ -169,6 +169,15 @@ $surface-container-highest: #353534;
 .el-message {
     background-color: var(--surface-container-high);
     border-color: var(--outline-variant);
+    z-index: 9999 !important;
+
+    .el-message__content {
+        color: var(--on-surface);
+    }
+
+    .el-message__icon {
+        color: var(--on-surface-variant);
+    }
 }
 
 .el-loading-mask {

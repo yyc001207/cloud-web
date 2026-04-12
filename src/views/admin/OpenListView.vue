@@ -469,7 +469,8 @@ async function handleHistoryDetail(row: LatestResultItem) {
 function getStatusType(
   status: string,
 ): 'success' | 'warning' | 'danger' | 'info' {
-  if (status === 'completed' || status === 'success' || status === '成功') return 'success'
+  if (status === 'completed' || status === 'success' || status === '成功')
+    return 'success'
   if (status === 'running' || status === '运行中') return 'warning'
   if (status === 'failed' || status === '失败') return 'danger'
   return 'info'
@@ -483,9 +484,9 @@ function getStatusLabel(status: string): string {
     success: '成功',
     failed: '失败',
     cancelled: '已取消',
-    '成功': '成功',
-    '失败': '失败',
-    '运行中': '运行中',
+    成功: '成功',
+    失败: '失败',
+    运行中: '运行中',
   }
   return map[status] || status
 }
@@ -494,11 +495,13 @@ const logMessages = ref<string[]>([])
 const logConnected = ref(false)
 const logConnecting = ref(false)
 let logWs: WebSocket | null = null
+let pingInterval: ReturnType<typeof setInterval> | null = null
 const logContainerRef = ref<HTMLElement | null>(null)
 
 function getWsUrl(): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
- return `${protocol}//${window.location.host}/api/ws/logs`
+  const token = localStorage.getItem('token') || ''
+  return `${protocol}//${window.location.host}/api/openlist/ws/logs?token=${encodeURIComponent(token)}`
 }
 
 function handleLogConnect() {
@@ -517,9 +520,18 @@ function handleLogConnect() {
   logWs.onopen = () => {
     logConnected.value = true
     logConnecting.value = false
+    pingInterval = setInterval(() => {
+      if (logWs && logWs.readyState === WebSocket.OPEN) {
+        logWs.send(JSON.stringify({ type: 'ping' }))
+      }
+    }, 30000)
   }
 
   logWs.onmessage = event => {
+    try {
+      const data = JSON.parse(event.data)
+      if (data.type === 'pong') return
+    } catch {}
     logMessages.value.push(event.data)
     nextTick(() => {
       scrollToBottom()
@@ -529,12 +541,20 @@ function handleLogConnect() {
   logWs.onclose = () => {
     logConnected.value = false
     logConnecting.value = false
+    if (pingInterval) {
+      clearInterval(pingInterval)
+      pingInterval = null
+    }
     logWs = null
   }
 
   logWs.onerror = () => {
     logConnected.value = false
     logConnecting.value = false
+    if (pingInterval) {
+      clearInterval(pingInterval)
+      pingInterval = null
+    }
     ElMessage.error('WebSocket 连接失败')
     logWs = null
   }
@@ -544,6 +564,10 @@ function handleLogDisconnect() {
   if (logWs) {
     logWs.close()
     logWs = null
+  }
+  if (pingInterval) {
+    clearInterval(pingInterval)
+    pingInterval = null
   }
   logConnected.value = false
   logConnecting.value = false
@@ -927,11 +951,7 @@ onMounted(() => {
         max-height="calc(100vh - 320px)"
       >
         <el-table-column type="index" label="序号" width="70" />
-        <el-table-column
-          prop="taskName"
-          label="任务名称"
-          min-width="150"
-        />
+        <el-table-column prop="taskName" label="任务名称" min-width="150" />
         <el-table-column prop="executionStatus" label="执行状态" width="120">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.executionStatus)" size="small">{{
@@ -980,29 +1000,41 @@ onMounted(() => {
                   <el-tag
                     :type="getStatusType(historyDetailData.executionStatus)"
                     size="small"
-                    >{{ getStatusLabel(historyDetailData.executionStatus) }}</el-tag
+                    >{{
+                      getStatusLabel(historyDetailData.executionStatus)
+                    }}</el-tag
                   >
                 </span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">总视频数</span>
-                <span class="detail-value">{{ historyDetailData.totalVideos ?? '-' }}</span>
+                <span class="detail-value">{{
+                  historyDetailData.totalVideos ?? '-'
+                }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">成功视频数</span>
-                <span class="detail-value">{{ historyDetailData.successVideos ?? '-' }}</span>
+                <span class="detail-value">{{
+                  historyDetailData.successVideos ?? '-'
+                }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">成功字幕数</span>
-                <span class="detail-value">{{ historyDetailData.successSubtitles ?? '-' }}</span>
+                <span class="detail-value">{{
+                  historyDetailData.successSubtitles ?? '-'
+                }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">失败字幕数</span>
-                <span class="detail-value">{{ historyDetailData.errorSubtitles ?? '-' }}</span>
+                <span class="detail-value">{{
+                  historyDetailData.errorSubtitles ?? '-'
+                }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">执行时间</span>
-                <span class="detail-value">{{ historyDetailData.executionTime }}</span>
+                <span class="detail-value">{{
+                  historyDetailData.executionTime
+                }}</span>
               </div>
             </div>
           </template>
@@ -1026,9 +1058,11 @@ onMounted(() => {
             <el-table-column type="index" label="序号" width="60" />
             <el-table-column prop="executionStatus" label="状态" width="100">
               <template #default="{ row }">
-                <el-tag :type="getStatusType(row.executionStatus)" size="small">{{
-                  getStatusLabel(row.executionStatus)
-                }}</el-tag>
+                <el-tag
+                  :type="getStatusType(row.executionStatus)"
+                  size="small"
+                  >{{ getStatusLabel(row.executionStatus) }}</el-tag
+                >
               </template>
             </el-table-column>
             <el-table-column label="执行信息" min-width="200">
