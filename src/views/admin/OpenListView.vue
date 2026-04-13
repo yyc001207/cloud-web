@@ -256,6 +256,17 @@ function handleTaskEdit(row: OpenListTaskConfigItem) {
   taskDialogVisible.value = true
 }
 
+function handleTaskCopy(row: OpenListTaskConfigItem) {
+  taskIsEdit.value = false
+  taskDialogTitle.value = '复制任务配置'
+  taskFormData.id = undefined
+  taskFormData.name = `${row.name} (副本)`
+  taskFormData.taskPaths = row.taskPaths
+  taskFormData.outputDir = row.outputDir
+  taskFormData.maxScanDepth = row.maxScanDepth
+  taskDialogVisible.value = true
+}
+
 async function handleTaskSubmit() {
   if (!taskFormRef.value) return
   await taskFormRef.value.validate(async valid => {
@@ -812,10 +823,13 @@ onMounted(() => {
             {{ row.maxScanDepth ?? '-' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="160" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button link type="success" @click="handleTaskEdit(row)"
               >编辑</el-button
+            >
+            <el-button link type="info" @click="handleTaskCopy(row)"
+              >复制</el-button
             >
             <el-button link type="danger" @click="handleTaskDelete(row)"
               >删除</el-button
