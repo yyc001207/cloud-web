@@ -1004,7 +1004,7 @@ onMounted(() => {
         title="任务执行详情"
         width="640px"
         @close="
-          historyDetailData = null
+          historyDetailData = null;
           historyDetailHistoryList = []
         "
       >
