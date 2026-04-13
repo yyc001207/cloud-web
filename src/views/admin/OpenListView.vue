@@ -508,6 +508,7 @@ const logConnecting = ref(false)
 let logWs: WebSocket | null = null
 let pingInterval: ReturnType<typeof setInterval> | null = null
 const logContainerRef = ref<HTMLElement | null>(null)
+const logAutoScroll = ref(true)
 
 function getWsUrl(): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
@@ -589,8 +590,14 @@ function handleLogClear() {
 }
 
 function scrollToBottom() {
-  if (logContainerRef.value) {
-    logContainerRef.value.scrollTop = logContainerRef.value.scrollHeight
+  if (!logAutoScroll.value || !logContainerRef.value) return
+
+  const container = logContainerRef.value
+  const distanceToBottom =
+    container.scrollHeight - (container.scrollTop + container.clientHeight)
+
+  if (distanceToBottom < 100) {
+    container.scrollTop = container.scrollHeight
   }
 }
 
@@ -997,7 +1004,7 @@ onMounted(() => {
         title="任务执行详情"
         width="640px"
         @close="
-          historyDetailData = null;
+          historyDetailData = null
           historyDetailHistoryList = []
         "
       >
@@ -1104,6 +1111,12 @@ onMounted(() => {
           <span class="status-text">{{
             logConnected ? '已连接' : logConnecting ? '连接中...' : '未连接'
           }}</span>
+          <el-switch
+            v-model="logAutoScroll"
+            active-text="自动滚动"
+            inactive-text="自动滚动"
+            style="margin-left: 16px"
+          />
         </div>
         <div class="log-actions">
           <el-button
@@ -1292,7 +1305,7 @@ onMounted(() => {
   .tab-content {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .search-bar {
@@ -1483,7 +1496,7 @@ onMounted(() => {
   .log-container {
     flex: 1;
     min-height: 0;
-    max-height: calc(100vh - 280px);
+    height: calc(100vh - 280px);
     overflow-y: auto;
     background: var(--surface-container-lowest);
     border: 1px solid rgba(61, 74, 62, 0.1);
