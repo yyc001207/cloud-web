@@ -591,14 +591,16 @@ function handleLogClear() {
 
 function scrollToBottom() {
   if (!logAutoScroll.value || !logContainerRef.value) return
+  const container = logContainerRef.value
+  container.scrollTop = container.scrollHeight
+}
 
+function handleLogScroll() {
+  if (!logContainerRef.value) return
   const container = logContainerRef.value
   const distanceToBottom =
     container.scrollHeight - (container.scrollTop + container.clientHeight)
-
-  if (distanceToBottom < 100) {
-    container.scrollTop = container.scrollHeight
-  }
+  logAutoScroll.value = distanceToBottom < 100
 }
 
 function handleTabClick(tab: string) {
@@ -1101,7 +1103,7 @@ onMounted(() => {
       </el-dialog>
     </div>
 
-    <div v-if="activeTab === 'log'" class="tab-content">
+    <div v-if="activeTab === 'log'" class="tab-content log-tab">
       <div class="log-toolbar">
         <div class="log-status">
           <span
@@ -1147,7 +1149,7 @@ onMounted(() => {
           </el-button>
         </div>
       </div>
-      <div ref="logContainerRef" class="log-container">
+      <div ref="logContainerRef" class="log-container" @scroll="handleLogScroll">
         <div v-if="logMessages.length === 0" class="log-empty">
           <p class="empty-text">暂无日志，请点击"连接"按钮开始接收</p>
         </div>
@@ -1493,10 +1495,14 @@ onMounted(() => {
     }
   }
 
+  .log-tab {
+    display: flex;
+    flex-direction: column;
+  }
+
   .log-container {
     flex: 1;
     min-height: 0;
-    height: calc(100vh - 280px);
     overflow-y: auto;
     background: var(--surface-container-lowest);
     border: 1px solid rgba(61, 74, 62, 0.1);
