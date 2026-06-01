@@ -2,6 +2,7 @@
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
+
 import {
   getGlobalConfig,
   addGlobalConfig,
@@ -512,8 +513,7 @@ const logAutoScroll = ref(true)
 
 function getWsUrl(): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const token = localStorage.getItem('token') || ''
-  return `${protocol}//${window.location.host}/api/openlist/ws/logs?token=${encodeURIComponent(token)}`
+  return `${protocol}//${window.location.host}/api/openlist/ws/logs`
 }
 
 function handleLogConnect() {

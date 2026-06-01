@@ -1,7 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { getAdminRouteRecords } from '../utils/routeConfig'
+import request from '../utils/request'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,40 +29,42 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
 router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
-  const hasToken = !!localStorage.getItem('token')
 
   if (to.meta.requiresAuth === false) {
-    if (hasToken) {
+    if (authStore.isAuthenticated) {
       next('/home')
     } else {
-      next()
+      try {
+        await request.get('/api/verify/token', { _skipAuthRedirect: true } as any)
+        authStore.isAuthenticated = true
+        next('/home')
+      } catch {
+        next()
+      }
     }
     return
   }
 
-  if (!hasToken) {
-    next({ path: '/login', query: { redirect: to.fullPath } })
+  if (authStore.isAuthenticated && authStore.userInfo) {
+    next()
     return
   }
 
-  if (!authStore.userInfo) {
-    try {
+  try {
+    if (!authStore.userInfo) {
       await authStore.getUserInfo()
-    } catch {
-      authStore.token = ''
-      localStorage.removeItem('token')
-      next({ path: '/login', query: { redirect: to.fullPath } })
-      return
     }
+    next()
+  } catch {
+    authStore.isAuthenticated = false
+    next({ path: '/login', query: { redirect: to.fullPath } })
   }
-
-  next()
 })
 
 export default router

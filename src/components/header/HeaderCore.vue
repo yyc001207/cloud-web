@@ -7,6 +7,7 @@ import CalendarModal from '../CalendarModal.vue'
 import { useRouter } from 'vue-router'
 import { useWeather } from '../../composables/useWeather'
 import { useAuthStore } from '../../stores/auth'
+import { ElMessageBox } from 'element-plus'
 
 const showWeatherModal = ref(false)
 const showCalendarModal = ref(false)
@@ -15,8 +16,17 @@ const authStore = useAuthStore()
 
 async function handleUserCommand(command: string) {
   if (command === 'logout') {
+    try {
+      await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+    } catch {
+      return
+    }
     await authStore.logout()
-    router.push('/login')
+    window.location.href = '/login'
   }
 }
 

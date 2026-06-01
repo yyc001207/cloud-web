@@ -3,22 +3,10 @@ import { ElMessage } from 'element-plus'
 
 const service = axios.create({
     baseURL: '',
+    withCredentials: true,
 })
 
 let isRedirecting = false
-
-service.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            config.headers.Authorization = token
-        }
-        return config
-    },
-    (error) => {
-        return Promise.reject(error)
-    },
-)
 
 service.interceptors.response.use(
     (response) => {
@@ -27,9 +15,8 @@ service.interceptors.response.use(
             return response.data
         }
         if (code === 401) {
-            if (!isRedirecting) {
+            if (!(response.config as any)._skipAuthRedirect && !isRedirecting) {
                 isRedirecting = true
-                localStorage.removeItem('token')
                 ElMessage.error('登录已过期，请重新登录')
                 window.location.href = '/login'
             }
@@ -44,9 +31,8 @@ service.interceptors.response.use(
         } else {
             const status = error.response.status
             if (status === 401) {
-                if (!isRedirecting) {
+                if (!(error.config as any)._skipAuthRedirect && !isRedirecting) {
                     isRedirecting = true
-                    localStorage.removeItem('token')
                     ElMessage.error('登录已过期，请重新登录')
                     window.location.href = '/login'
                 }
@@ -66,8 +52,8 @@ const request = {
     post<T = unknown>(url: string, data?: unknown) {
         return service.post(url, data) as Promise<T>
     },
-    get<T = unknown>(url: string) {
-        return service.get(url) as Promise<T>
+    get<T = unknown>(url: string, config?: object) {
+        return service.get(url, config) as Promise<T>
     },
     put<T = unknown>(url: string, data?: unknown) {
         return service.put(url, data) as Promise<T>

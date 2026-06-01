@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
 import {
   getTextList,
   addText,
@@ -294,8 +295,7 @@ async function handleDeleteFile(row: FileTransferItem) {
 }
 
 function handleDownloadFile(row: FileTransferItem) {
-  const token = localStorage.getItem('token') || ''
-  const url = `/api/transfer/file/download/${row.id}?token=${encodeURIComponent(token)}`
+  const url = `/api/transfer/file/download/${row.id}`
   window.open(url, '_blank')
 }
 

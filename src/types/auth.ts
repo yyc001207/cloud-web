@@ -6,7 +6,6 @@ export interface LoginRequest {
 export interface LoginResponse {
     code: number
     msg: string
-    token: string
 }
 
 export type LogoutRequest = Record<string, never>
