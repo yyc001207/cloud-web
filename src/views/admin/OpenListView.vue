@@ -174,7 +174,7 @@ async function handleGlobalDelete() {
     await deleteGlobalConfig(globalConfigData.value.id)
     ElMessage.success('删除成功')
     loadGlobalData()
-  } catch {}
+  } catch { }
 }
 
 const taskTableData = ref<OpenListTaskConfigItem[]>([])
@@ -261,7 +261,7 @@ async function loadPresetOptions() {
   try {
     const res = await getPresetConfigList({ pageNum: 1, pageSize: 1000 })
     taskPresets.value = res.data
-  } catch {}
+  } catch { }
 }
 
 function handleTaskAdd() {
@@ -347,7 +347,7 @@ async function handleTaskDelete(row: OpenListTaskConfigItem) {
     await deleteTaskConfig(row.id)
     ElMessage.success('删除成功')
     loadTaskData()
-  } catch {}
+  } catch { }
 }
 
 async function handleTaskBatchDelete() {
@@ -367,7 +367,7 @@ async function handleTaskBatchDelete() {
     )
     ElMessage.success('删除成功')
     loadTaskData()
-  } catch {}
+  } catch { }
 }
 
 function handleTaskSelectionChange(rows: OpenListTaskConfigItem[]) {
@@ -474,7 +474,7 @@ async function handlePresetDelete(row: PresetConfigItem) {
     await deletePresetConfig(row.id)
     ElMessage.success('删除成功')
     loadPresetData()
-  } catch {}
+  } catch { }
 }
 
 async function handlePresetSubmit() {
@@ -535,7 +535,7 @@ async function loadExecuteOptions() {
     ])
     executeGlobalOptions.value = globalRes.data ? [globalRes.data] : []
     executeTaskOptions.value = taskRes.data || []
-  } catch {}
+  } catch { }
 }
 
 async function handleExecute() {
@@ -586,7 +586,7 @@ async function handleCancelRunning(taskId: string) {
     await cancelTask(taskId)
     ElMessage.success('任务已取消')
     loadRunningTasks()
-  } catch {}
+  } catch { }
 }
 
 const historyList = ref<LatestResultItem[]>([])
@@ -694,7 +694,7 @@ function handleLogConnect() {
     try {
       const data = JSON.parse(event.data)
       if (data.type === 'pong') return
-    } catch {}
+    } catch { }
     logMessages.value.push(event.data)
     nextTick(() => {
       scrollToBottom()
@@ -796,49 +796,28 @@ onMounted(() => {
     <h1 class="page-title">OpenList管理</h1>
 
     <div class="tab-nav">
-      <button
-        :class="['tab-btn', { active: activeTab === 'global' }]"
-        @click="handleTabClick('global')"
-      >
+      <button :class="['tab-btn', { active: activeTab === 'global' }]" @click="handleTabClick('global')">
         全局配置
       </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'task' }]"
-        @click="handleTabClick('task')"
-      >
-        任务配置
-      </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'preset' }]"
-        @click="handleTabClick('preset')"
-      >
+      <button :class="['tab-btn', { active: activeTab === 'preset' }]" @click="handleTabClick('preset')">
         预设配置
       </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'execute' }]"
-        @click="handleTabClick('execute')"
-      >
+      <button :class="['tab-btn', { active: activeTab === 'task' }]" @click="handleTabClick('task')">
+        任务配置
+      </button>
+
+      <button :class="['tab-btn', { active: activeTab === 'execute' }]" @click="handleTabClick('execute')">
         执行管理
       </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'history' }]"
-        @click="handleTabClick('history')"
-      >
+      <button :class="['tab-btn', { active: activeTab === 'history' }]" @click="handleTabClick('history')">
         任务历史
       </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'log' }]"
-        @click="handleTabClick('log')"
-      >
+      <button :class="['tab-btn', { active: activeTab === 'log' }]" @click="handleTabClick('log')">
         实时日志
       </button>
     </div>
 
-    <div
-      v-if="activeTab === 'global'"
-      v-loading="globalLoading"
-      class="tab-content"
-    >
+    <div v-if="activeTab === 'global'" v-loading="globalLoading" class="tab-content">
       <div v-if="!globalConfigData" class="global-empty">
         <p class="empty-text">暂无全局配置，请先新增</p>
         <el-button type="success" @click="handleGlobalAdd">
@@ -871,24 +850,17 @@ onMounted(() => {
             <span class="detail-label">Token</span>
             <span class="detail-value token-masked">{{
               globalConfigData.tokenMasked
-            }}</span>
+              }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">视频格式</span>
             <span class="detail-value">
-              <template
-                v-if="
-                  globalConfigData.videoExtensions &&
-                  globalConfigData.videoExtensions.length > 0
-                "
-              >
-                <el-tag
-                  v-for="ext in globalConfigData.videoExtensions"
-                  :key="ext"
-                  size="small"
-                  class="ext-tag"
-                  >{{ ext }}</el-tag
-                >
+              <template v-if="
+                globalConfigData.videoExtensions &&
+                globalConfigData.videoExtensions.length > 0
+              ">
+                <el-tag v-for="ext in globalConfigData.videoExtensions" :key="ext" size="small" class="ext-tag">{{ ext
+                  }}</el-tag>
               </template>
               <span v-else>-</span>
             </span>
@@ -896,19 +868,12 @@ onMounted(() => {
           <div class="detail-item">
             <span class="detail-label">字幕格式</span>
             <span class="detail-value">
-              <template
-                v-if="
-                  globalConfigData.subtitleExtensions &&
-                  globalConfigData.subtitleExtensions.length > 0
-                "
-              >
-                <el-tag
-                  v-for="ext in globalConfigData.subtitleExtensions"
-                  :key="ext"
-                  size="small"
-                  class="ext-tag"
-                  >{{ ext }}</el-tag
-                >
+              <template v-if="
+                globalConfigData.subtitleExtensions &&
+                globalConfigData.subtitleExtensions.length > 0
+              ">
+                <el-tag v-for="ext in globalConfigData.subtitleExtensions" :key="ext" size="small" class="ext-tag">{{
+                  ext }}</el-tag>
               </template>
               <span v-else>-</span>
             </span>
@@ -919,13 +884,8 @@ onMounted(() => {
 
     <div v-if="activeTab === 'task'" class="tab-content">
       <div class="search-bar">
-        <el-input
-          v-model="searchName"
-          placeholder="请输入任务名称"
-          clearable
-          class="search-input"
-          @keyup.enter="handleTaskSearch"
-        />
+        <el-input v-model="searchName" placeholder="请输入任务名称" clearable class="search-input"
+          @keyup.enter="handleTaskSearch" />
         <el-button type="success" @click="handleTaskSearch">
           <span class="material-symbols-outlined btn-icon">search</span>
           查询
@@ -941,12 +901,8 @@ onMounted(() => {
           <span class="material-symbols-outlined btn-icon">add</span>
           新增任务配置
         </el-button>
-        <el-button
-          type="danger"
-          :disabled="taskSelectedRows.length === 0"
-          @click="handleTaskBatchDelete"
-          v-if="taskSelectedRows.length > 0"
-        >
+        <el-button type="danger" :disabled="taskSelectedRows.length === 0" @click="handleTaskBatchDelete"
+          v-if="taskSelectedRows.length > 0">
           <span class="material-symbols-outlined btn-icon">delete</span>
           批量删除{{
             taskSelectedRows.length > 0 ? `(${taskSelectedRows.length})` : ''
@@ -954,42 +910,18 @@ onMounted(() => {
         </el-button>
       </div>
 
-      <el-table
-        :data="taskTableData"
-        v-loading="taskLoading"
-        @selection-change="handleTaskSelectionChange"
-        @sort-change="handleTaskSortChange"
-        max-height="calc(100vh - 420px)"
-      >
+      <el-table :data="taskTableData" v-loading="taskLoading" @selection-change="handleTaskSelectionChange"
+        @sort-change="handleTaskSortChange" max-height="calc(100vh - 420px)">
         <el-table-column type="selection" width="50" />
-        <el-table-column
-          type="index"
-          label="序号"
-          width="70"
-          :index="(i: number) => (taskCurrentPage - 1) * taskPageSize + i + 1"
-        />
-        <el-table-column
-          prop="name"
-          label="名称"
-          min-width="150"
-          sortable="custom"
-        />
-        <el-table-column
-          prop="outputDir"
-          label="输出目录"
-          min-width="180"
-          show-overflow-tooltip
-        >
+        <el-table-column type="index" label="序号" width="70"
+          :index="(i: number) => (taskCurrentPage - 1) * taskPageSize + i + 1" />
+        <el-table-column prop="name" label="名称" min-width="150" sortable="custom" />
+        <el-table-column prop="outputDir" label="输出目录" min-width="180" show-overflow-tooltip>
           <template #default="{ row }">
             {{ row.outputDir || '-' }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="taskPaths"
-          label="处理路径"
-          min-width="200"
-          show-overflow-tooltip
-        />
+        <el-table-column prop="taskPaths" label="处理路径" min-width="200" show-overflow-tooltip />
         <el-table-column prop="maxScanDepth" label="扫描深度" width="100">
           <template #default="{ row }">
             {{ row.maxScanDepth ?? '-' }}
@@ -997,40 +929,23 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
-            <el-button link type="success" @click="handleTaskEdit(row)"
-              >编辑</el-button
-            >
-            <el-button link type="info" @click="handleTaskCopy(row)"
-              >复制</el-button
-            >
-            <el-button link type="danger" @click="handleTaskDelete(row)"
-              >删除</el-button
-            >
+            <el-button link type="success" @click="handleTaskEdit(row)">编辑</el-button>
+            <el-button link type="info" @click="handleTaskCopy(row)">复制</el-button>
+            <el-button link type="danger" @click="handleTaskDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination-bar">
-        <el-pagination
-          v-model:current-page="taskCurrentPage"
-          v-model:page-size="taskPageSize"
-          :total="taskTotal"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next"
-          background
-        />
+        <el-pagination v-model:current-page="taskCurrentPage" v-model:page-size="taskPageSize" :total="taskTotal"
+          :page-sizes="[10, 20, 50]" layout="total, sizes, prev, pager, next" background />
       </div>
     </div>
 
     <div v-if="activeTab === 'preset'" class="tab-content">
       <div class="search-bar">
-        <el-input
-          v-model="presetSearchName"
-          placeholder="按预设名称搜索"
-          clearable
-          style="width: 240px"
-          @keyup.enter="handlePresetSearch"
-        />
+        <el-input v-model="presetSearchName" placeholder="按预设名称搜索" clearable style="width: 240px"
+          @keyup.enter="handlePresetSearch" />
         <el-button type="primary" @click="handlePresetSearch">搜索</el-button>
         <el-button @click="handlePresetReset">重置</el-button>
       </div>
@@ -1038,34 +953,23 @@ onMounted(() => {
         <el-button type="primary" @click="handlePresetAdd">新增</el-button>
       </div>
       <div class="table-wrapper">
-      <el-table
-        :data="presetData"
-        v-loading="presetLoading"
-        height="100%"
-      >
-        <el-table-column type="index" label="#" width="60" :index="(i: number) => i + (presetCurrentPage - 1) * presetPageSize + 1" />
-        <el-table-column prop="name" label="预设名称" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="presetPath" label="预设路径" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="sortOrder" label="排序" width="80" />
-        <el-table-column label="操作" width="150" fixed="right">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="handlePresetEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="handlePresetDelete(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table :data="presetData" v-loading="presetLoading" height="100%">
+          <el-table-column type="index" label="#" width="60"
+            :index="(i: number) => i + (presetCurrentPage - 1) * presetPageSize + 1" />
+          <el-table-column prop="name" label="预设名称" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="presetPath" label="预设路径" min-width="200" show-overflow-tooltip />
+          <el-table-column prop="sortOrder" label="排序" width="80" />
+          <el-table-column label="操作" width="150" fixed="right">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="handlePresetEdit(row)">编辑</el-button>
+              <el-button link type="danger" @click="handlePresetDelete(row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-      <el-pagination
-        class="pagination-bar"
-        v-model:current-page="presetCurrentPage"
-        v-model:page-size="presetPageSize"
-        :total="presetTotal"
-        :page-sizes="[10, 20, 50]"
-        layout="total, sizes, prev, pager, next"
-        background
-        @current-change="loadPresetData"
-        @size-change="loadPresetData"
-      />
+      <el-pagination class="pagination-bar" v-model:current-page="presetCurrentPage" v-model:page-size="presetPageSize"
+        :total="presetTotal" :page-sizes="[10, 20, 50]" layout="total, sizes, prev, pager, next" background
+        @current-change="loadPresetData" @size-change="loadPresetData" />
     </div>
 
     <div v-if="activeTab === 'execute'" class="tab-content">
@@ -1073,31 +977,13 @@ onMounted(() => {
         <h3 class="section-title">执行任务</h3>
         <el-form label-width="120px" class="execute-form">
           <el-form-item label="选择全局配置">
-            <el-select
-              v-model="executeFormData.globalConfigId"
-              placeholder="请选择全局配置"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in executeGlobalOptions"
-                :key="item.id"
-                :label="item.baseUrl"
-                :value="item.id"
-              />
+            <el-select v-model="executeFormData.globalConfigId" placeholder="请选择全局配置" style="width: 100%">
+              <el-option v-for="item in executeGlobalOptions" :key="item.id" :label="item.baseUrl" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="选择任务配置">
-            <el-select
-              v-model="executeFormData.taskConfigId"
-              placeholder="请选择任务配置"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in executeTaskOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+            <el-select v-model="executeFormData.taskConfigId" placeholder="请选择任务配置" style="width: 100%">
+              <el-option v-for="item in executeTaskOptions" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="增量更新">
@@ -1107,11 +993,7 @@ onMounted(() => {
             <el-switch v-model="executeFormData.force" />
           </el-form-item>
           <el-form-item>
-            <el-button
-              type="success"
-              :loading="executeLoading"
-              @click="handleExecute"
-            >
+            <el-button type="success" :loading="executeLoading" @click="handleExecute">
               <span class="material-symbols-outlined btn-icon">play_arrow</span>
               执行
             </el-button>
@@ -1127,68 +1009,41 @@ onMounted(() => {
             刷新
           </el-button>
         </div>
-        <el-table
-          :data="runningTasks"
-          v-loading="runningLoading"
-          empty-text="暂无运行中任务"
-          max-height="300"
-        >
-          <el-table-column
-            prop="taskId"
-            label="任务ID"
-            min-width="120"
-            show-overflow-tooltip
-          />
-          <el-table-column
-            prop="taskConfigName"
-            label="任务名称"
-            min-width="150"
-          />
+        <el-table :data="runningTasks" v-loading="runningLoading" empty-text="暂无运行中任务" max-height="300">
+          <el-table-column prop="taskId" label="任务ID" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="taskConfigName" label="任务名称" min-width="150" />
           <el-table-column prop="status" label="状态" width="120">
             <template #default="{ row }">
               <el-tag :type="getStatusType(row.status)" size="small">{{
                 getStatusLabel(row.status)
-              }}</el-tag>
+                }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="startTime" label="开始时间" width="180" />
           <el-table-column label="操作" width="100">
             <template #default="{ row }">
-              <el-button
-                link
-                type="danger"
-                @click="handleCancelRunning(row.taskId)"
-                >取消</el-button
-              >
+              <el-button link type="danger" @click="handleCancelRunning(row.taskId)">取消</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
 
-    <div
-      v-if="activeTab === 'history'"
-      v-loading="historyLoading"
-      class="tab-content"
-    >
+    <div v-if="activeTab === 'history'" v-loading="historyLoading" class="tab-content">
       <div class="section-header" style="margin-bottom: 16px">
         <el-button size="small" @click="loadHistoryList">
           <span class="material-symbols-outlined btn-icon">refresh</span>
           刷新
         </el-button>
       </div>
-      <el-table
-        :data="historyList"
-        empty-text="暂无执行历史"
-        max-height="calc(100vh - 320px)"
-      >
+      <el-table :data="historyList" empty-text="暂无执行历史" max-height="calc(100vh - 320px)">
         <el-table-column type="index" label="序号" width="70" />
         <el-table-column prop="taskName" label="任务名称" min-width="150" />
         <el-table-column prop="executionStatus" label="执行状态" width="120">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.executionStatus)" size="small">{{
               getStatusLabel(row.executionStatus)
-            }}</el-tag>
+              }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="执行信息" min-width="220">
@@ -1203,22 +1058,15 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="{ row }">
-            <el-button link type="success" @click="handleHistoryDetail(row)"
-              >详情</el-button
-            >
+            <el-button link type="success" @click="handleHistoryDetail(row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog
-        v-model="historyDetailVisible"
-        title="任务执行详情"
-        width="640px"
-        @close="
-          historyDetailData = null;
-          historyDetailHistoryList = []
-        "
-      >
+      <el-dialog v-model="historyDetailVisible" title="任务执行详情" width="640px" @close="
+        historyDetailData = null;
+      historyDetailHistoryList = []
+        ">
         <div v-loading="historyDetailLoading">
           <template v-if="historyDetailData">
             <div class="detail-grid" style="margin-bottom: 24px">
@@ -1229,72 +1077,58 @@ onMounted(() => {
               <div class="detail-item">
                 <span class="detail-label">执行状态</span>
                 <span class="detail-value">
-                  <el-tag
-                    :type="getStatusType(historyDetailData.executionStatus)"
-                    size="small"
-                    >{{
-                      getStatusLabel(historyDetailData.executionStatus)
-                    }}</el-tag
-                  >
+                  <el-tag :type="getStatusType(historyDetailData.executionStatus)" size="small">{{
+                    getStatusLabel(historyDetailData.executionStatus)
+                  }}</el-tag>
                 </span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">总视频数</span>
                 <span class="detail-value">{{
                   historyDetailData.totalVideos ?? '-'
-                }}</span>
+                  }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">成功视频数</span>
                 <span class="detail-value">{{
                   historyDetailData.successVideos ?? '-'
-                }}</span>
+                  }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">成功字幕数</span>
                 <span class="detail-value">{{
                   historyDetailData.successSubtitles ?? '-'
-                }}</span>
+                  }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">失败字幕数</span>
                 <span class="detail-value">{{
                   historyDetailData.errorSubtitles ?? '-'
-                }}</span>
+                  }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">执行时间</span>
                 <span class="detail-value">{{
                   historyDetailData.executionTime
-                }}</span>
+                  }}</span>
               </div>
             </div>
           </template>
 
-          <h4
-            style="
+          <h4 style="
               font-size: 1rem;
               font-weight: 600;
               color: var(--on-surface);
               margin-bottom: 12px;
-            "
-          >
+            ">
             历史执行记录
           </h4>
-          <el-table
-            :data="historyDetailHistoryList"
-            empty-text="暂无历史记录"
-            max-height="300"
-            size="small"
-          >
+          <el-table :data="historyDetailHistoryList" empty-text="暂无历史记录" max-height="300" size="small">
             <el-table-column type="index" label="序号" width="60" />
             <el-table-column prop="executionStatus" label="状态" width="100">
               <template #default="{ row }">
-                <el-tag
-                  :type="getStatusType(row.executionStatus)"
-                  size="small"
-                  >{{ getStatusLabel(row.executionStatus) }}</el-tag
-                >
+                <el-tag :type="getStatusType(row.executionStatus)" size="small">{{ getStatusLabel(row.executionStatus)
+                  }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="执行信息" min-width="200">
@@ -1315,44 +1149,22 @@ onMounted(() => {
     <div v-if="activeTab === 'log'" class="tab-content log-tab">
       <div class="log-toolbar">
         <div class="log-status">
-          <span
-            class="status-dot"
-            :class="{ connected: logConnected, connecting: logConnecting }"
-          ></span>
+          <span class="status-dot" :class="{ connected: logConnected, connecting: logConnecting }"></span>
           <span class="status-text">{{
             logConnected ? '已连接' : logConnecting ? '连接中...' : '未连接'
-          }}</span>
-          <el-switch
-            v-model="logAutoScroll"
-            active-text="自动滚动"
-            inactive-text="自动滚动"
-            style="margin-left: 16px"
-          />
+            }}</span>
+          <el-switch v-model="logAutoScroll" active-text="自动滚动" inactive-text="自动滚动" style="margin-left: 16px" />
         </div>
         <div class="log-actions">
-          <el-button
-            v-if="!logConnected && !logConnecting"
-            type="success"
-            size="small"
-            @click="handleLogConnect"
-          >
+          <el-button v-if="!logConnected && !logConnecting" type="success" size="small" @click="handleLogConnect">
             <span class="material-symbols-outlined btn-icon">link</span>
             连接
           </el-button>
-          <el-button
-            v-if="logConnected || logConnecting"
-            type="danger"
-            size="small"
-            @click="handleLogDisconnect"
-          >
+          <el-button v-if="logConnected || logConnecting" type="danger" size="small" @click="handleLogDisconnect">
             <span class="material-symbols-outlined btn-icon">link_off</span>
             断开
           </el-button>
-          <el-button
-            size="small"
-            @click="handleLogClear"
-            :disabled="logMessages.length === 0"
-          >
+          <el-button size="small" @click="handleLogClear" :disabled="logMessages.length === 0">
             <span class="material-symbols-outlined btn-icon">delete_sweep</span>
             清空
           </el-button>
@@ -1368,125 +1180,56 @@ onMounted(() => {
       </div>
     </div>
 
-    <el-dialog
-      v-model="globalDialogVisible"
-      :title="globalDialogTitle"
-      width="480px"
-    >
-      <el-form
-        ref="globalFormRef"
-        :model="globalFormData"
-        :rules="globalRules"
-        label-width="100px"
-      >
+    <el-dialog v-model="globalDialogVisible" :title="globalDialogTitle" width="480px">
+      <el-form ref="globalFormRef" :model="globalFormData" :rules="globalRules" label-width="100px">
         <el-form-item label="服务器地址" prop="baseUrl">
-          <el-input
-            v-model="globalFormData.baseUrl"
-            placeholder="请输入服务器地址"
-          />
+          <el-input v-model="globalFormData.baseUrl" placeholder="请输入服务器地址" />
         </el-form-item>
         <el-form-item label="Token" prop="token">
-          <el-input
-            v-model="globalFormData.token"
-            type="password"
-            show-password
-            :placeholder="globalIsEdit ? '留空则不修改' : '请输入Token'"
-          />
+          <el-input v-model="globalFormData.token" type="password" show-password
+            :placeholder="globalIsEdit ? '留空则不修改' : '请输入Token'" />
         </el-form-item>
         <el-form-item label="视频格式">
-          <el-input
-            v-model="globalFormData.videoExtensionsStr"
-            placeholder="请输入视频格式，逗号分隔，如 .mp4, .mkv"
-          />
+          <el-input v-model="globalFormData.videoExtensionsStr" placeholder="请输入视频格式，逗号分隔，如 .mp4, .mkv" />
         </el-form-item>
         <el-form-item label="字幕格式">
-          <el-input
-            v-model="globalFormData.subtitleExtensionsStr"
-            placeholder="请输入字幕格式，逗号分隔，如 .srt, .ass"
-          />
+          <el-input v-model="globalFormData.subtitleExtensionsStr" placeholder="请输入字幕格式，逗号分隔，如 .srt, .ass" />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="globalDialogVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="globalSubmitLoading"
-          @click="handleGlobalSubmit"
-          >确定</el-button
-        >
+        <el-button type="primary" :loading="globalSubmitLoading" @click="handleGlobalSubmit">确定</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog
-      v-model="taskDialogVisible"
-      :title="taskDialogTitle"
-      width="480px"
-    >
-      <el-form
-        ref="taskFormRef"
-        :model="taskFormData"
-        :rules="taskRules"
-        label-width="80px"
-      >
+    <el-dialog v-model="taskDialogVisible" :title="taskDialogTitle" width="480px">
+      <el-form ref="taskFormRef" :model="taskFormData" :rules="taskRules" label-width="80px">
         <el-form-item label="任务名称" prop="name">
           <el-input v-model="taskFormData.name" placeholder="请输入任务名称" />
         </el-form-item>
         <el-form-item label="预设">
-          <el-select
-            v-model="taskPresetSelected"
-            placeholder="请选择预设（可选）"
-            clearable
-          >
-            <el-option
-              v-for="preset in taskPresets"
-              :key="preset.id"
-              :label="preset.name"
-              :value="preset.id"
-            />
+          <el-select v-model="taskPresetSelected" placeholder="请选择预设（可选）" clearable>
+            <el-option v-for="preset in taskPresets" :key="preset.id" :label="preset.name" :value="preset.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="处理路径" prop="taskPaths">
-          <el-input
-            v-model="taskFormData.taskPaths"
-            placeholder="请输入处理路径"
-          />
+          <el-input v-model="taskFormData.taskPaths" placeholder="请输入处理路径" />
         </el-form-item>
         <el-form-item label="输出目录">
-          <el-input
-            v-model="taskFormData.outputDir as string"
-            placeholder="请输入输出目录"
-          />
+          <el-input v-model="taskFormData.outputDir as string" placeholder="请输入输出目录" />
         </el-form-item>
         <el-form-item label="扫描深度">
-          <el-input-number
-            v-model="taskFormData.maxScanDepth as number"
-            :min="0"
-            controls-position="right"
-          />
+          <el-input-number v-model="taskFormData.maxScanDepth as number" :min="0" controls-position="right" />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="taskDialogVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="taskSubmitLoading"
-          @click="handleTaskSubmit"
-          >确定</el-button
-        >
+        <el-button type="primary" :loading="taskSubmitLoading" @click="handleTaskSubmit">确定</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog
-      v-model="presetDialogVisible"
-      :title="presetDialogTitle"
-      width="480px"
-    >
-      <el-form
-        ref="presetFormRef"
-        :model="presetFormData"
-        :rules="presetRules"
-        label-width="80px"
-      >
+    <el-dialog v-model="presetDialogVisible" :title="presetDialogTitle" width="480px">
+      <el-form ref="presetFormRef" :model="presetFormData" :rules="presetRules" label-width="80px">
         <el-form-item label="预设名称" prop="name">
           <el-input v-model="presetFormData.name" placeholder="请输入预设名称" />
         </el-form-item>
@@ -1494,22 +1237,13 @@ onMounted(() => {
           <el-input v-model="presetFormData.presetPath" placeholder="请输入预设路径" />
         </el-form-item>
         <el-form-item label="排序">
-          <el-input-number
-            v-model="presetFormData.sortOrder as number"
-            :min="0"
-            controls-position="right"
-            placeholder="排序"
-          />
+          <el-input-number v-model="presetFormData.sortOrder as number" :min="0" controls-position="right"
+            placeholder="排序" />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="presetDialogVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="presetSubmitLoading"
-          @click="handlePresetSubmit"
-          >确定</el-button
-        >
+        <el-button type="primary" :loading="presetSubmitLoading" @click="handlePresetSubmit">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -1802,10 +1536,12 @@ onMounted(() => {
   }
 
   @keyframes pulse {
+
     0%,
     100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0.4;
     }
