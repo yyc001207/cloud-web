@@ -15,6 +15,10 @@ import type {
     TaskHistoryDetailResponse,
     TaskHistoryResponse,
     LatestResultsResponse,
+    PresetConfigItem,
+    PresetConfigListRequest,
+    PresetConfigCreateRequest,
+    PresetConfigUpdateRequest,
 } from '../types/openlist'
 
 export function getGlobalConfig() {
@@ -71,4 +75,20 @@ export function getTaskHistory(data: TaskHistoryRequest) {
 
 export function getTaskHistoryDetail(taskConfigId: number) {
     return request.post<TaskHistoryDetailResponse>('/api/openlist/task/history/detail', { taskConfigId })
+}
+
+export function getPresetConfigList(data?: PresetConfigListRequest) {
+    return request.post<OpenListListResponse<PresetConfigItem>>('/api/openlist/preset-config/list', data)
+}
+
+export function addPresetConfig(data: PresetConfigCreateRequest) {
+    return request.post<OpenListActionResponse>('/api/openlist/preset-config/add', data)
+}
+
+export function updatePresetConfig(id: number, data: PresetConfigUpdateRequest) {
+    return request.post<OpenListActionResponse>(`/api/openlist/preset-config/update?id=${id}`, data)
+}
+
+export function deletePresetConfig(id: number) {
+    return request.post<OpenListActionResponse>(`/api/openlist/preset-config/delete?id=${id}`)
 }

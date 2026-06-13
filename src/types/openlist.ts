@@ -161,3 +161,32 @@ export interface LatestResultsResponse {
     msg: string
     data: LatestResultItem[]
 }
+
+export interface PresetConfigItem {
+    id: number
+    name: string
+    presetPath: string
+    sortOrder: number | null
+    createdAt: string | null
+    updatedAt: string | null
+}
+
+export interface PresetConfigListRequest {
+    pageNum?: number
+    pageSize?: number
+    name?: string
+    orderBy?: string | null
+    orderDir?: string | null
+}
+
+export interface PresetConfigCreateRequest {
+    name: string
+    presetPath: string
+    sortOrder?: number | null
+}
+
+export interface PresetConfigUpdateRequest {
+    name?: string | null
+    presetPath?: string | null
+    sortOrder?: number | null
+}

@@ -17,6 +17,10 @@ import {
   getRunningTasks,
   getLatestResults,
   getTaskHistory,
+  getPresetConfigList,
+  addPresetConfig,
+  updatePresetConfig,
+  deletePresetConfig,
 } from '../../api/openlist'
 import type {
   OpenListGlobalConfigItem,
@@ -30,6 +34,9 @@ import type {
   LatestResultItem,
   TaskHistoryLatestDetail,
   TaskHistoryListItem,
+  PresetConfigItem,
+  PresetConfigCreateRequest,
+  PresetConfigUpdateRequest,
 } from '../../types/openlist'
 
 const activeTab = ref('global')
@@ -206,6 +213,21 @@ const taskRules: FormRules = {
   taskPaths: [{ required: true, message: '请输入处理路径', trigger: 'blur' }],
 }
 
+const taskPresets = ref<PresetConfigItem[]>([])
+
+const taskPresetSelected = ref<number | string>('')
+
+watch(taskPresetSelected, (val) => {
+  if (val) {
+    const preset = taskPresets.value.find(p => p.id === val)
+    if (preset) {
+      const path = preset.presetPath.replace(/^\//, '')
+      taskFormData.taskPaths = 'emby/' + path
+      taskFormData.outputDir = '/' + path
+    }
+  }
+})
+
 async function loadTaskData() {
   taskLoading.value = true
   try {
@@ -235,6 +257,13 @@ function handleTaskReset() {
   loadTaskData()
 }
 
+async function loadPresetOptions() {
+  try {
+    const res = await getPresetConfigList({ pageNum: 1, pageSize: 1000 })
+    taskPresets.value = res.data
+  } catch {}
+}
+
 function handleTaskAdd() {
   taskIsEdit.value = false
   taskDialogTitle.value = '新增任务配置'
@@ -243,6 +272,8 @@ function handleTaskAdd() {
   taskFormData.taskPaths = ''
   taskFormData.outputDir = null
   taskFormData.maxScanDepth = null
+  taskPresetSelected.value = ''
+  loadPresetOptions()
   taskDialogVisible.value = true
 }
 
@@ -254,6 +285,8 @@ function handleTaskEdit(row: OpenListTaskConfigItem) {
   taskFormData.taskPaths = row.taskPaths
   taskFormData.outputDir = row.outputDir
   taskFormData.maxScanDepth = row.maxScanDepth
+  taskPresetSelected.value = ''
+  loadPresetOptions()
   taskDialogVisible.value = true
 }
 
@@ -265,6 +298,8 @@ function handleTaskCopy(row: OpenListTaskConfigItem) {
   taskFormData.taskPaths = row.taskPaths
   taskFormData.outputDir = row.outputDir
   taskFormData.maxScanDepth = row.maxScanDepth
+  taskPresetSelected.value = ''
+  loadPresetOptions()
   taskDialogVisible.value = true
 }
 
@@ -355,6 +390,122 @@ function handleTaskSortChange({
   }
   taskCurrentPage.value = 1
   loadTaskData()
+}
+
+// 预设配置
+const presetLoading = ref(false)
+const presetData = ref<PresetConfigItem[]>([])
+const presetTotal = ref(0)
+const presetCurrentPage = ref(1)
+const presetPageSize = ref(10)
+const presetSearchName = ref('')
+
+const presetDialogVisible = ref(false)
+const presetDialogTitle = ref('新增预设配置')
+const presetFormRef = ref<FormInstance>()
+const presetIsEdit = ref(false)
+const presetSubmitLoading = ref(false)
+
+const presetFormData = reactive<{
+  id?: number
+  name: string
+  presetPath: string
+  sortOrder: number | null
+}>({
+  name: '',
+  presetPath: '',
+  sortOrder: null,
+})
+
+const presetRules: FormRules = {
+  name: [{ required: true, message: '请输入预设名称', trigger: 'blur' }],
+  presetPath: [{ required: true, message: '请输入预设路径', trigger: 'blur' }],
+}
+
+async function loadPresetData() {
+  presetLoading.value = true
+  try {
+    const res = await getPresetConfigList({
+      pageNum: presetCurrentPage.value,
+      pageSize: presetPageSize.value,
+      name: presetSearchName.value || undefined,
+    })
+    presetData.value = res.data
+    presetTotal.value = res.total
+  } finally {
+    presetLoading.value = false
+  }
+}
+
+function handlePresetSearch() {
+  presetCurrentPage.value = 1
+  loadPresetData()
+}
+
+function handlePresetReset() {
+  presetSearchName.value = ''
+  presetCurrentPage.value = 1
+  loadPresetData()
+}
+
+function handlePresetAdd() {
+  presetIsEdit.value = false
+  presetDialogTitle.value = '新增预设配置'
+  presetFormData.id = undefined
+  presetFormData.name = ''
+  presetFormData.presetPath = ''
+  presetFormData.sortOrder = null
+  presetDialogVisible.value = true
+}
+
+function handlePresetEdit(row: PresetConfigItem) {
+  presetIsEdit.value = true
+  presetDialogTitle.value = '编辑预设配置'
+  presetFormData.id = row.id
+  presetFormData.name = row.name
+  presetFormData.presetPath = row.presetPath
+  presetFormData.sortOrder = row.sortOrder
+  presetDialogVisible.value = true
+}
+
+async function handlePresetDelete(row: PresetConfigItem) {
+  try {
+    await ElMessageBox.confirm('确定删除该预设配置吗？', '提示', { type: 'warning' })
+    await deletePresetConfig(row.id)
+    ElMessage.success('删除成功')
+    loadPresetData()
+  } catch {}
+}
+
+async function handlePresetSubmit() {
+  if (!presetFormRef.value) return
+  await presetFormRef.value.validate(async valid => {
+    if (!valid) return
+    presetSubmitLoading.value = true
+    try {
+      if (presetIsEdit.value) {
+        const data: PresetConfigUpdateRequest = {
+          name: presetFormData.name,
+          presetPath: presetFormData.presetPath,
+          sortOrder: presetFormData.sortOrder,
+        }
+        await updatePresetConfig(presetFormData.id!, data)
+        ElMessage.success('编辑成功')
+      } else {
+        const data: PresetConfigCreateRequest = {
+          name: presetFormData.name,
+          presetPath: presetFormData.presetPath,
+          sortOrder: presetFormData.sortOrder,
+        }
+        await addPresetConfig(data)
+        ElMessage.success('新增成功')
+      }
+      presetDialogVisible.value = false
+      loadPresetData()
+    } finally {
+      presetSubmitLoading.value = false
+    }
+  })
 }
 
 const executeGlobalOptions = ref<OpenListGlobalConfigItem[]>([])
@@ -612,6 +763,9 @@ function handleTabClick(tab: string) {
   if (tab === 'history') {
     loadHistoryList()
   }
+  if (tab === 'preset') {
+    loadPresetData()
+  }
 }
 
 watch([taskCurrentPage, taskPageSize], () => {
@@ -624,6 +778,9 @@ watch(activeTab, val => {
   }
   if (val === 'history') {
     loadHistoryList()
+  }
+  if (val === 'preset') {
+    loadPresetData()
   }
 })
 
@@ -650,6 +807,12 @@ onMounted(() => {
         @click="handleTabClick('task')"
       >
         任务配置
+      </button>
+      <button
+        :class="['tab-btn', { active: activeTab === 'preset' }]"
+        @click="handleTabClick('preset')"
+      >
+        预设配置
       </button>
       <button
         :class="['tab-btn', { active: activeTab === 'execute' }]"
@@ -857,6 +1020,52 @@ onMounted(() => {
           background
         />
       </div>
+    </div>
+
+    <div v-if="activeTab === 'preset'" class="tab-content">
+      <div class="search-bar">
+        <el-input
+          v-model="presetSearchName"
+          placeholder="按预设名称搜索"
+          clearable
+          style="width: 240px"
+          @keyup.enter="handlePresetSearch"
+        />
+        <el-button type="primary" @click="handlePresetSearch">搜索</el-button>
+        <el-button @click="handlePresetReset">重置</el-button>
+      </div>
+      <div class="action-bar">
+        <el-button type="primary" @click="handlePresetAdd">新增</el-button>
+      </div>
+      <div class="table-wrapper">
+      <el-table
+        :data="presetData"
+        v-loading="presetLoading"
+        height="100%"
+      >
+        <el-table-column type="index" label="#" width="60" :index="(i: number) => i + (presetCurrentPage - 1) * presetPageSize + 1" />
+        <el-table-column prop="name" label="预设名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="presetPath" label="预设路径" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="sortOrder" label="排序" width="80" />
+        <el-table-column label="操作" width="150" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="handlePresetEdit(row)">编辑</el-button>
+            <el-button link type="danger" @click="handlePresetDelete(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      </div>
+      <el-pagination
+        class="pagination-bar"
+        v-model:current-page="presetCurrentPage"
+        v-model:page-size="presetPageSize"
+        :total="presetTotal"
+        :page-sizes="[10, 20, 50]"
+        layout="total, sizes, prev, pager, next"
+        background
+        @current-change="loadPresetData"
+        @size-change="loadPresetData"
+      />
     </div>
 
     <div v-if="activeTab === 'execute'" class="tab-content">
@@ -1222,6 +1431,20 @@ onMounted(() => {
         <el-form-item label="任务名称" prop="name">
           <el-input v-model="taskFormData.name" placeholder="请输入任务名称" />
         </el-form-item>
+        <el-form-item label="预设">
+          <el-select
+            v-model="taskPresetSelected"
+            placeholder="请选择预设（可选）"
+            clearable
+          >
+            <el-option
+              v-for="preset in taskPresets"
+              :key="preset.id"
+              :label="preset.name"
+              :value="preset.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="处理路径" prop="taskPaths">
           <el-input
             v-model="taskFormData.taskPaths"
@@ -1248,6 +1471,43 @@ onMounted(() => {
           type="primary"
           :loading="taskSubmitLoading"
           @click="handleTaskSubmit"
+          >确定</el-button
+        >
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="presetDialogVisible"
+      :title="presetDialogTitle"
+      width="480px"
+    >
+      <el-form
+        ref="presetFormRef"
+        :model="presetFormData"
+        :rules="presetRules"
+        label-width="80px"
+      >
+        <el-form-item label="预设名称" prop="name">
+          <el-input v-model="presetFormData.name" placeholder="请输入预设名称" />
+        </el-form-item>
+        <el-form-item label="预设路径" prop="presetPath">
+          <el-input v-model="presetFormData.presetPath" placeholder="请输入预设路径" />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number
+            v-model="presetFormData.sortOrder as number"
+            :min="0"
+            controls-position="right"
+            placeholder="排序"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="presetDialogVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="presetSubmitLoading"
+          @click="handlePresetSubmit"
           >确定</el-button
         >
       </template>
@@ -1308,6 +1568,14 @@ onMounted(() => {
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .table-wrapper {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
   }
 
   .search-bar {
